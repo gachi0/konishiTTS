@@ -1,7 +1,7 @@
 import { IEvent } from "../bot";
 
 export default new class implements IEvent {
-    name = "interactionCreate";
+    name = "ready";
     execute = async () => {
         console.log("ログイン完了！");
     };
