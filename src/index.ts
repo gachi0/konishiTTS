@@ -1,4 +1,4 @@
-import { allImport, client, IEvent, setting } from "./bot";
+import { allImport, client, IEvent, config } from "./bot";
 
 + async function () {
     // イベント登録
@@ -7,5 +7,5 @@ import { allImport, client, IEvent, setting } from "./bot";
             e.execute(...args).catch(console.error));
     }
     // botにログイン
-    await client.login(setting.token);
+    await client.login(config.token);
 }();
