@@ -11,9 +11,7 @@ export default new class implements ICommand {
             await intr.reply("ボイスチャンネルに参加してません！");
             return;
         }
-        const vi = managers[intr.guildId];
-        delete managers[intr.guildId];
-        vi.conn.disconnect();
+        managers[intr.guildId].conn.disconnect();
         await intr.reply("切断しました！");
     };
 };

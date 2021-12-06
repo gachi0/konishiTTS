@@ -5,5 +5,5 @@ token = ""
 # サーバースコープでコマンドを登録する場合のみ設定します
 guildId = ""
 
-# voicevoxのエンジンのURL (基本そのままでOK)
+# VOICEOX engineのAPIのURL (基本そのままでOK)
 engineUrl = "http://localhost:50021"

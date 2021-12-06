@@ -8,7 +8,7 @@ export const client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MESSAGES]
 });
 
-export class TTSManager {
+export class ConnectionManager {
     private player = createAudioPlayer();
     /** 読み上げるテキストチャンネルのid */
     chId: string;
@@ -41,7 +41,7 @@ export class TTSManager {
 }
 
 /** 読み上げするギルド */
-export const managers: Record<string, TTSManager> = {};
+export const managers: Record<string, ConnectionManager> = {};
 
 /** 設定 */
 export const config: {

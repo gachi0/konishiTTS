@@ -1,4 +1,4 @@
-import { ICommand, managers, TTSManager } from "../bot";
+import { ICommand, managers, ConnectionManager } from "../bot";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { CommandInteraction, GuildMember } from "discord.js";
 import { joinVoiceChannel } from "@discordjs/voice";
@@ -25,7 +25,7 @@ export default new class implements ICommand {
             channelId: vc.id,
             adapterCreator: intr.guild.voiceAdapterCreator
         });
-        managers[intr.guildId] = new TTSManager(intr.channelId, conn);
+        managers[intr.guildId] = new ConnectionManager(intr.channelId, conn);
         await intr.reply("参加しました！このチャンネルでのメッセージの読み上げを開始します！");
     };
 };
