@@ -6,6 +6,7 @@ export default new class implements ICommand {
     data = new SlashCommandBuilder()
         .setName("disconnect")
         .setDescription("botをボイスチャンネルから切断します！");
+    guildOnly = true;
     execute = async (intr: CommandInteraction) => {
         if (!managers[intr.guildId]) {
             await intr.reply("ボイスチャンネルに参加してません！");

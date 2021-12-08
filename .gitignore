@@ -105,4 +105,6 @@ dist
 
 .vscode/
 config.toml
+*.sqlite3-journal
+*.sqlite3
 /.vs

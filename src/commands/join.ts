@@ -7,7 +7,7 @@ export default new class implements ICommand {
     data = new SlashCommandBuilder()
         .setName("join")
         .setDescription("読み上げを開始します！");
-
+    guildOnly = true;
     execute = async (intr: CommandInteraction) => {
         if (!(intr.member instanceof GuildMember) || !intr.guild) return;
         const vc = intr.member.voice.channel;

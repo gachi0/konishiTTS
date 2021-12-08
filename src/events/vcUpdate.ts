@@ -9,7 +9,7 @@ export default new class implements IEvent {
         if (!after.channel) {
             // 通話が自分だけになったら抜ける
             if (before.channel?.members.size === 1) {
-                managers[after.guild.id].conn.disconnect();
+                managers[after.guild.id]?.conn.disconnect();
             }
             // 自分が通話から抜けたら
             if (after.member.id === client.user?.id) {
