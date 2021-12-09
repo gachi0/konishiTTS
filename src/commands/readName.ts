@@ -1,4 +1,4 @@
-import { ICommand, managers } from "../bot";
+import { ICommand } from "../bot";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { CommandInteraction } from "discord.js";
 import { GuildEntity } from "../db";
