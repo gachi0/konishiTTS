@@ -4,8 +4,8 @@ import { CommandInteraction } from "discord.js";
 
 export default new class implements ICommand {
     data = new SlashCommandBuilder()
-        .setName("disconnect")
-        .setDescription("botをボイスチャンネルから切断します！");
+        .setName("leave")
+        .setDescription("botをボイスチャンネルから退出させます！");
     guildOnly = true;
     execute = async (intr: CommandInteraction) => {
         if (!managers[intr.guildId]) {
@@ -13,6 +13,6 @@ export default new class implements ICommand {
             return;
         }
         managers[intr.guildId].conn.disconnect();
-        await intr.reply("切断しました！");
+        await intr.reply("退出しました！");
     };
 };
