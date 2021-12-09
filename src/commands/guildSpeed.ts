@@ -5,11 +5,11 @@ import { GuildEntity } from "../db";
 
 export default new class implements ICommand {
     data = new SlashCommandBuilder()
+        .setName("guild_speed")
         .addNumberOption(o => o
             .setName("speed")
             .setDescription("0.5から2.0までの範囲で指定してください")
             .setRequired(true))
-        .setName("guild_speed")
         .setDescription("このサーバーでの話速を設定します");
     guildOnly = true;
     adminOnly = true;

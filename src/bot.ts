@@ -50,6 +50,20 @@ export const config: {
     engineUrl: string
 } = toml.parse(fs.readFileSync("./config.toml").toString());
 
+/** っ */
+export const speakersInfo: Record<number, string> = {
+    0: "四国めたん(あまあま)",
+    2: "四国めたん(ノーマル)",
+    4: "四国めたん(セクシー)",
+    6: "四国めたん(ツンツン)",
+    1: "ずんだもん(あまあま)",
+    3: "ずんだもん(ノーマル)",
+    5: "ずんだもん(セクシー)",
+    7: "ずんだもん(ツンツン)",
+    8: "春日部つむぎ",
+    9: "波音リツ"
+};
+
 /** path 以下の ts | js ファイルの default を全部インポート */
 export const allImport = (path: string): Promise<unknown[]> => Promise.all(fs.readdirSync(`./src/${path}`)
     .filter((f: string) => /(\.js|\.ts)$/.test(f))
