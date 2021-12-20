@@ -21,7 +21,10 @@ export default new class implements IEvent {
         const guild = await GuildEntity.get(msg.guildId);
 
         // 読み上げるための文字列
-        const content = guild.readName ? `${msg.author.username} ${msg.content}` : msg.content;
+        let content = guild.readName ? `${msg.author.username} ${msg.content}` : msg.content;
+
+        // URLを読み上げないようにする
+        content = content.replace(/https?:\/\S*/g, "url");
 
         // 音声合成用のクエリを生成
         const query = await axios.post(
