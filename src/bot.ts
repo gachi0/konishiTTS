@@ -10,16 +10,17 @@ export const client = new Client({
 
 export class ConnectionManager {
     private player = createAudioPlayer();
+    /** 読み上げ待ちの音声たち */
+    queue: AudioResource[] = [];
     /** 読み上げるテキストチャンネルのid */
     chId: string;
     /** Botの接続 */
     conn: VoiceConnection;
-    /** 読み上げ待ちの音声たち */
-    queue: AudioResource[] = [];
     /** 読み上げ中かどうか */
-    isPlaying = false;
+    private isPlaying = false;
 
-    play = async () => {
+    /** 再生開始 */
+    private start = async () => {
         this.isPlaying = true;
         // queueが空になるまで読み上げる
         while (this.queue[0]) {
@@ -32,6 +33,14 @@ export class ConnectionManager {
             this.queue.shift();
         }
         this.isPlaying = false;
+    };
+
+    /** queueに音声を追加する。再生中でなければ再生を開始する */
+    play = async (resource: AudioResource) => {
+        this.queue.push(resource);
+        if (!this.isPlaying) {
+            await this.start();
+        }
     };
 
     constructor(chId: string, conn: VoiceConnection) {
@@ -50,7 +59,7 @@ export const config: {
     engineUrl: string
 } = toml.parse(fs.readFileSync("./config.toml").toString());
 
-/** っ */
+/** スピーカーの情報 */
 export const speakersInfo: Record<number, string> = {
     0: "四国めたん(あまあま)",
     2: "四国めたん(ノーマル)",

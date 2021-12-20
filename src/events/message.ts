@@ -42,12 +42,9 @@ export default new class implements IEvent {
         const wav = await axios.post(`${config.engineUrl}/synthesis?speaker=${0}`, query.data, {
             responseType: "arraybuffer"
         });
-
-        // 合成した音声を再生可能にする
         const resource = createAudioResource(Readable.from(wav.data));
-        manager.queue.push(resource);
-        if (!manager.isPlaying) {
-            await manager.play();
-        }
+
+        // 合成した音声を再生する
+        await manager.play(resource);
     };
 };
