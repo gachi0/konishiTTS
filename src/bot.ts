@@ -11,7 +11,7 @@ export const client = new Client({
 export class ConnectionManager {
     private player = createAudioPlayer();
     /** 読み上げ待ちの音声たち */
-    queue: AudioResource[] = [];
+    private queue: AudioResource[] = [];
     /** 読み上げるテキストチャンネルのid */
     chId: string;
     /** Botの接続 */
