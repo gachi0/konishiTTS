@@ -12,7 +12,7 @@ export default new class implements ICommand {
             await intr.reply("ボイスチャンネルに参加してません！");
             return;
         }
-        managers[intr.guildId].conn.disconnect();
+        managers[intr.guildId]?.conn.disconnect();
         await intr.reply("退出しました！");
     };
 };

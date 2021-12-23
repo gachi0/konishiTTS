@@ -18,7 +18,7 @@ export default new class implements ICommand {
         }
         // 入れない
         if (!vc.joinable) {
-            await intr.reply("ボイスチャンネルに参加することができません！");
+            await intr.reply("ボイスチャンネルに参加することができません！権限や人数を確認してください！");
         }
         const conn = joinVoiceChannel({
             guildId: intr.guildId,

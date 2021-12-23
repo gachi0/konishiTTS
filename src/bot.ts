@@ -1,22 +1,26 @@
 import { SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "@discordjs/builders";
 import { Client, CommandInteraction, Intents, TextBasedChannels } from "discord.js";
 import fs from "fs";
+import axios from "axios";
 import toml from "toml";
-import { AudioPlayerStatus, AudioResource, createAudioPlayer, entersState, VoiceConnection } from "@discordjs/voice";
+import { AudioPlayerStatus, AudioResource, createAudioPlayer, createAudioResource, entersState, VoiceConnection } from "@discordjs/voice";
+import { GuildEntity, UserEntity } from "./db";
+import { Readable } from "typeorm/platform/PlatformTools";
 
 export const client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MESSAGES]
 });
 
+
 export class ConnectionManager {
     private player = createAudioPlayer();
-    /** 読み上げ待ちの音声たち */
+    /** 再生待ちの音声たち */
     private queue: AudioResource[] = [];
-    /** 読み上げるテキストチャンネルのid */
-    chId: string;
+    /** 読み上げるチャンネルのid */
+    chId;
     /** Botの接続 */
-    conn: VoiceConnection;
-    /** 読み上げ中かどうか */
+    conn;
+    /** 再生中かどうか */
     private isPlaying = false;
 
     /** 再生開始 */
@@ -43,14 +47,40 @@ export class ConnectionManager {
         }
     };
 
+    /** textを読み上げる */
+    speak = async (text: string, guild: GuildEntity, user?: UserEntity) => {
+        // 音声合成用のクエリを生成
+        const query = await axios.post(
+            `${config.engineUrl}/audio_query?text=${encodeURI(text)}&speaker=${user?.speaker ?? guild.speaker}`);
+
+        // モーラ数が guild.maxChar を超えていたらスキップ
+        let moras = 0;
+        for (const i of query.data.accent_phrases) {
+            moras += i.moras.length;
+            moras += i.pause_mora ? 1 : 0;
+        }
+        if (guild.maxChar < moras) return;
+
+        // その他の設定を反映
+        query.data.speedScale = guild.speed;
+        query.data.pitchScale = user?.pitch ?? guild.pitch;
+
+        //音声合成
+        const wav = await axios.post(`${config.engineUrl}/synthesis?speaker=${0}`, query.data, {
+            responseType: "arraybuffer"
+        });
+        const resource = createAudioResource(Readable.from(wav.data));
+        await this.play(resource);
+    };
+
     constructor(chId: string, conn: VoiceConnection) {
-        this.chId = chId;
         this.conn = conn;
+        this.chId = chId;
     }
 }
 
 /** 読み上げするギルド */
-export const managers: Record<string, ConnectionManager> = {};
+export const managers: Record<string, ConnectionManager | undefined> = {};
 
 /** 設定 */
 export const config: {
