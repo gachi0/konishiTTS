@@ -7,22 +7,18 @@ voicevoxを使用したdiscordの読み上げBot
 [node.js](https://nodejs.org/ja/) v16以上が必要です。  
 [VOICEVOX](https://voicevox.hiroshiba.jp) を使用するので、VOICEVOXを起動しておいてください  
 
-1. ディレクトリの移動  
-```cmd
-cd konishiTTS
-```
 
-2. 必要なパッケージのインストール  
+1. 必要なパッケージのインストール  
 ```
 npm i
 ```
 
-3. configファイルの設定  
+2. configファイルの設定  
 `config.toml.sample` を `config.toml` にリネーム  
 tokenにはボットのtokenを設定  
 サーバースコープでコマンドを登録する場合は、guildidを設定（任意）
 
-4. コマンドの登録  
+3. コマンドの登録  
 - アプリケーションスコープで登録する場合（推奨）
 ```
 npm run cmdapp
@@ -33,7 +29,7 @@ npm run cmdapp
 npm run cmdguild
 ```
 
-5. 実行！  
+4. 実行！  
 ```
 npm start
 ```
