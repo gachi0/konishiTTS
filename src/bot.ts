@@ -5,12 +5,11 @@ import axios from "axios";
 import toml from "toml";
 import { AudioPlayerStatus, AudioResource, createAudioPlayer, createAudioResource, entersState, VoiceConnection } from "@discordjs/voice";
 import { GuildEntity, UserEntity } from "./db";
-import { Readable } from "typeorm/platform/PlatformTools";
+import { Readable } from "stream";
 
 export const client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MESSAGES]
 });
-
 
 export class ConnectionManager {
     private player = createAudioPlayer();
