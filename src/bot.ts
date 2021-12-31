@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "@discordjs/builders";
-import { Client, CommandInteraction, Intents, TextBasedChannels } from "discord.js";
+import { Client, CommandInteraction, Intents, TextBasedChannel } from "discord.js";
 import fs from "fs";
 import axios from "axios";
 import toml from "toml";
@@ -111,7 +111,7 @@ export interface ICommand {
     data: SlashCommandBuilder | SlashCommandSubcommandsOnlyBuilder;
     adminOnly?: boolean;
     guildOnly?: boolean;
-    execute(intr: CommandInteraction, ch?: TextBasedChannels): Promise<void>;
+    execute(intr: CommandInteraction, ch?: TextBasedChannel): Promise<void>;
 }
 
 export interface IEvent {

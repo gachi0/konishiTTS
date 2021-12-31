@@ -1,7 +1,7 @@
 import { ICommand, managers, ConnectionManager } from "../bot";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { CommandInteraction, GuildMember } from "discord.js";
-import { joinVoiceChannel } from "@discordjs/voice";
+import { joinVoiceChannel, DiscordGatewayAdapterCreator } from "@discordjs/voice";
 
 export default new class implements ICommand {
     data = new SlashCommandBuilder()
@@ -21,11 +21,11 @@ export default new class implements ICommand {
             await intr.reply("ボイスチャンネルに参加することができません！権限や人数を確認してください！");
         }
         const conn = joinVoiceChannel({
-            guildId: intr.guildId,
+            guildId: intr.guild.id,
             channelId: vc.id,
-            adapterCreator: intr.guild.voiceAdapterCreator
+            adapterCreator: intr.guild.voiceAdapterCreator as DiscordGatewayAdapterCreator
         });
-        managers[intr.guildId] = new ConnectionManager(intr.channelId, conn);
+        managers[intr.guild.id] = new ConnectionManager(intr.channelId, conn);
         await intr.reply("参加しました！このチャンネルでのメッセージの読み上げを開始します！");
     };
 };

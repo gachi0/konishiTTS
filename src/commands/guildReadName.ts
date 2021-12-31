@@ -13,6 +13,7 @@ export default new class implements ICommand {
         .setDescription("Botが名前を読み上げるかどうかを切り替えます！");
     guildOnly = true;
     execute = async (intr: CommandInteraction) => {
+        if (!intr.guildId) return;
         const readName = intr.options.getBoolean("read_name", true);
         const guild = await GuildEntity.get(intr.guildId);
         guild.readName = readName;

@@ -1,4 +1,4 @@
-import { CommandInteraction, Interaction, Permissions, TextBasedChannels } from "discord.js";
+import { CommandInteraction, GuildTextBasedChannel, Interaction, Permissions } from "discord.js";
 import { allImport, ICommand, IEvent } from "../bot";
 
 const cmds: Record<string, ICommand> = {};
@@ -25,7 +25,7 @@ export default new class implements IEvent {
             }
             let ch = intr.channel;
             if (!ch) {
-                ch = await intr.client.channels.fetch(intr.channelId) as TextBasedChannels;
+                ch = await intr.client.channels.fetch(intr.channelId) as GuildTextBasedChannel;
                 if (!ch) return;
             }
             await cmd.execute(intr, ch).catch(async e =>

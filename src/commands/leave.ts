@@ -8,6 +8,7 @@ export default new class implements ICommand {
         .setDescription("botをボイスチャンネルから退出させます！");
     guildOnly = true;
     execute = async (intr: CommandInteraction) => {
+        if (!intr.guildId) return;
         if (!managers[intr.guildId]) {
             await intr.reply("ボイスチャンネルに参加してません！");
             return;

@@ -9,7 +9,7 @@ export default new class implements ICommand {
         .setDescription("ユーザー設定の一覧を表示します！");
     guildOnly = true;
     execute = async (intr: CommandInteraction) => {
-        if (!intr.guild) return;
+        if (!intr.guild || !intr.guildId) return;
         const guild = await GuildEntity.get(intr.guildId);
         await intr.reply({
             embeds: [new MessageEmbed()

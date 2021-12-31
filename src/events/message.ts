@@ -7,6 +7,7 @@ export default new class implements IEvent {
     execute = async (msg: Message) => {
         if (msg.author.bot) return;
         if (!msg.guildId) return;
+        
         // botが通話に参加してなければスキップ
         const manager = managers[msg.guildId];
         if (!manager) return;

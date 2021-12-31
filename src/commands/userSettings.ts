@@ -8,6 +8,7 @@ export default new class implements ICommand {
         .setName("user_settings")
         .setDescription("ユーザー設定の一覧を表示します！");
     execute = async (intr: CommandInteraction) => {
+        if (!intr.guildId) return;
         const user = await UserEntity.get(intr.user.id);
         const guild = await GuildEntity.get(intr.guildId);
         intr.reply({

@@ -14,6 +14,7 @@ export default new class implements ICommand {
     guildOnly = true;
     adminOnly = true;
     execute = async (intr: CommandInteraction) => {
+        if (!intr.guildId) return;
         const speed = intr.options.getNumber("speed", true);
         if (!(0.5 <= speed && speed <= 2)) {
             await intr.reply({
