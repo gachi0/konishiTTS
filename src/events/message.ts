@@ -19,7 +19,9 @@ export default new class implements IEvent {
         // 読み上げるための文字列
         let text = guild.readName ? `${msg.author.username} ${msg.content}` : msg.content;
         // URLを読み上げないようにする
-        text = text.replace(/https?:\/\S*/g, "url");
+        text = text.replace(/https?:\/\S*/g, "url")
+        // "#"が入っているとエラーになる
+            .replace(/#/g, "");
         // 文字列を読み上げる
         manager.speak(text, guild, user);
     };
