@@ -11,6 +11,15 @@ export const client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MESSAGES]
 });
 
+/** 設定 */
+export const config: {
+    token: string,
+    guildId: string,
+    engineUrl: string
+} = toml.parse(fs.readFileSync("./config.toml").toString());
+
+export const voicevox = axios.create({ baseURL: config.engineUrl });
+
 export class ConnectionManager {
     private player = createAudioPlayer();
     /** 再生待ちの音声たち */
@@ -49,8 +58,8 @@ export class ConnectionManager {
     /** textを読み上げる */
     speak = async (text: string, guild: GuildEntity, user?: UserEntity) => {
         // 音声合成用のクエリを生成
-        const query = await axios.post(
-            `${config.engineUrl}/audio_query?text=${encodeURI(text)}&speaker=${user?.speaker ?? guild.speaker}`);
+        const query = await voicevox.post(
+            `/audio_query?text=${encodeURI(text)}&speaker=${user?.speaker ?? guild.speaker}`);
 
         // モーラ数が guild.maxChar を超えていたらスキップ
         let moras = 0;
@@ -65,7 +74,7 @@ export class ConnectionManager {
         query.data.pitchScale = user?.pitch ?? guild.pitch;
 
         //音声合成
-        const wav = await axios.post(`${config.engineUrl}/synthesis?speaker=${0}`, query.data, {
+        const wav = await voicevox.post(`/synthesis?speaker=${0}`, query.data, {
             responseType: "arraybuffer"
         });
         const resource = createAudioResource(Readable.from(wav.data));
@@ -81,25 +90,16 @@ export class ConnectionManager {
 /** 読み上げするギルド */
 export const managers: Record<string, ConnectionManager | undefined> = {};
 
-/** 設定 */
-export const config: {
-    token: string,
-    guildId: string,
-    engineUrl: string
-} = toml.parse(fs.readFileSync("./config.toml").toString());
-
 /** スピーカーの情報 */
-export const speakersInfo: Record<number, string> = {
-    0: "四国めたん(あまあま)",
-    2: "四国めたん(ノーマル)",
-    4: "四国めたん(セクシー)",
-    6: "四国めたん(ツンツン)",
-    1: "ずんだもん(あまあま)",
-    3: "ずんだもん(ノーマル)",
-    5: "ずんだもん(セクシー)",
-    7: "ずんだもん(ツンツン)",
-    8: "春日部つむぎ",
-    9: "波音リツ"
+export const speakersInfo: Record<number, string> = [];
+/** スピーカーの情報を取得してspeakersInfoに代入 */
+export const speakersInit = async () => {
+    const speakers = await voicevox.get("/speakers");
+    for (const i of speakers.data) {
+        for (const j of i.styles) {
+            speakersInfo[j.id] = `${i.name}(${j.name})`;
+        }
+    }
 };
 
 /** path 以下の ts | js ファイルの default を全部インポート */

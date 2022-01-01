@@ -1,10 +1,11 @@
 import { Routes } from "discord-api-types/v9";
 import { REST } from "@discordjs/rest";
-import { allImport, ICommand, config } from "./bot";
+import { allImport, ICommand, config, speakersInit } from "./bot";
 import { ClientUser } from "discord.js";
 const rest = new REST({ version: "9" }).setToken(config.token);
 
 + async function () {
+    await speakersInit();
     const clientId = (await rest.get(Routes.user("@me")) as ClientUser).id;
     if (process.argv[2] === "guild") {
         await rest.put(Routes.applicationGuildCommands(clientId, config.guildId), {
