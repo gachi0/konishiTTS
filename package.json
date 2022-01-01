@@ -17,8 +17,8 @@
     "@typescript-eslint/parser": "^5.8.1",
     "eslint": "^8.5.0"
   },
-  "name": "ts-discord-bot-template",
-  "description": "typescriptでdiscordのbot作るときのテンプレ",
+  "name": "konishi-tts",
+  "description": "",
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
