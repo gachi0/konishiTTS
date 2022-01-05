@@ -59,7 +59,7 @@ export class ConnectionManager {
     speak = async (text: string, guild: GuildEntity, user?: UserEntity) => {
         // 音声合成用のクエリを生成
         const query = await voicevox.post(
-            `/audio_query?text=${encodeURI(text)}&speaker=${user?.speaker ?? guild.speaker}`);
+            `/audio_query?text=${encodeURIComponent(text)}&speaker=${user?.speaker ?? guild.speaker}`);
 
         // モーラ数が guild.maxChar を超えていたらスキップ
         let moras = 0;

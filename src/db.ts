@@ -8,9 +8,13 @@ export class UserEntity {
     @PrimaryColumn({ type: "varchar" })
     id: string;
 
-    /** 喋る人 (0~9) */
+    /** 喋る人 */
     @Column({ type: "smallint", nullable: true })
     speaker?: number;
+
+    /** 自分のメッセージを読み上げるかどうか */
+    @Column({ type: "boolean", default: true })
+    isRead = true;
 
     /** 読み上げのピッチ (-0.15~0.15) */
     @Column({ type: "float", nullable: true })
@@ -41,7 +45,7 @@ export class GuildEntity {
     @Column({ type: "boolean", default: false })
     readName = false;
 
-    /** 喋る人 (0~9) */
+    /** 喋る人 */
     @Column({ type: "smallint", default: 0 })
     speaker = 0;
 
