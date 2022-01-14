@@ -88,16 +88,16 @@ export class ConnectionManager {
 }
 
 /** 読み上げするギルド */
-export const managers: Record<string, ConnectionManager | undefined> = {};
+export const managers = new Map<string, ConnectionManager>();
 
 /** スピーカーの情報 */
-export const speakersInfo: Record<number, string> = [];
+export const speakersInfo = new Map<number, string>();
 /** スピーカーの情報を取得してspeakersInfoに代入 */
 export const speakersInit = async () => {
     const speakers = await voicevox.get("/speakers");
     for (const i of speakers.data) {
         for (const j of i.styles) {
-            speakersInfo[j.id] = `${i.name}(${j.name})`;
+            speakersInfo.set(j.id, `${i.name}(${j.name})`);
         }
     }
 };

@@ -10,7 +10,7 @@ export default new class implements IEvent {
             || !msg.guildId) return;
 
         // botが通話に参加してなければスキップ
-        const manager = managers[msg.guildId];
+        const manager = managers.get(msg.guildId);
         if (!manager) return;
         // 読み上げ対象のチャンネルでなければスキップ
         if (msg.channelId !== manager.chId) return;

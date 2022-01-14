@@ -18,6 +18,6 @@ export default new class implements ICommand {
         const guild = await GuildEntity.get(intr.guildId);
         guild.readName = readName;
         await GuildEntity.repo.save(guild);
-        await intr.reply(readName ? "名前を読み上げるようにします！" : "名前を読み上げないようにします！");
+        await intr.reply(`名前を読み上げ${readName ? "る" : "ない"}ようにします！`);
     };
 };

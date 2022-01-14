@@ -15,7 +15,7 @@ export default new class implements ICommand {
             embeds: [new MessageEmbed()
                 .setTitle(`${intr.user.username}の設定`)
                 .addField("読み上げ", user.isRead ? "ON" : "OFF")
-                .addField("声", speakersInfo[user.speaker ?? guild.speaker])
+                .addField("声", `${speakersInfo.get(user.speaker ?? guild.speaker)}`)
                 .addField("音高(-0.15~0.15)", `${user.pitch ?? guild.pitch}`)
             ],
             ephemeral: true

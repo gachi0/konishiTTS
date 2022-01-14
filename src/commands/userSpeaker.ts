@@ -8,8 +8,8 @@ const speakerOptions = new SlashCommandIntegerOption()
     .setName("speaker")
     .setDescription("喋る人")
     .setRequired(true);
-for (const k of Object.keys(speakersInfo).map(Number)) {
-    speakerOptions.addChoice(speakersInfo[k], k);
+for (const [num, name] of speakersInfo) {
+    speakerOptions.addChoice(name, num);
 }
 
 export default new class implements ICommand {
@@ -21,6 +21,6 @@ export default new class implements ICommand {
         const user = await UserEntity.get(intr.user.id);
         user.speaker = intr.options.getInteger("speaker", true);
         await UserEntity.repo.save(user);
-        intr.reply(`喋る人を${speakersInfo[user.speaker]}に変更しました！`);
+        intr.reply(`喋る人を${speakersInfo.get(user.speaker)}に変更しました！`);
     };
 };

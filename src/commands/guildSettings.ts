@@ -14,7 +14,7 @@ export default new class implements ICommand {
         await intr.reply({
             embeds: [new MessageEmbed()
                 .setTitle(`${intr.guild.name}の設定`)
-                .addField("デフォルトの声", speakersInfo[guild.speaker])
+                .addField("デフォルトの声", `${speakersInfo.get(guild.speaker)}`)
                 .addField("読み上げる文字数の上限", guild.maxChar.toString())
                 .addField("名前の読み上げ", guild.readName ? "ON" : "OFF")
                 .addField("話速(0.5~2.0)", guild.speed.toString())

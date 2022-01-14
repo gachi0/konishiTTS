@@ -22,7 +22,7 @@ export default new class implements IEvent {
         else if (!after.channel) {
             // 自分が通話から抜けたら
             if (after.member.id === client.user?.id) {
-                delete managers[before.channel.guild.id];
+                managers.delete(before.channel.guild.id);
             }
         }
         // 移動
@@ -34,7 +34,7 @@ export default new class implements IEvent {
 
 /** ボイスチャンネルに参加 */
 const vcJoin = async (member: GuildMember, guild: GuildEntity, vc: vcOrStage) => {
-    const manager = managers[vc.guild.id];
+    const manager = managers.get(vc.guild.id);
 
     // 参加したのが自分だった場合、読み上げない
     if (member.id === client.user?.id) {

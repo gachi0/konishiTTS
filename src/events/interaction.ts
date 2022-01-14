@@ -1,11 +1,11 @@
 import { CommandInteraction, GuildTextBasedChannel, Interaction, Permissions } from "discord.js";
 import { allImport, ICommand, IEvent } from "../bot";
 
-const cmds: Record<string, ICommand> = {};
+const cmds = new Map<string, ICommand>();
 // コマンドを取ってくる
 + async function () {
     for (const c of await allImport("commands") as ICommand[]) {
-        cmds[c.data.name] = c;
+        cmds.set(c.data.name, c);
     }
 }();
 
@@ -13,7 +13,7 @@ export default new class implements IEvent {
     name = "interactionCreate";
     execute = async (intr: Interaction) => {
         if (intr instanceof CommandInteraction) {
-            const cmd = cmds[intr.commandName];
+            const cmd = cmds.get(intr.commandName);
             if (!cmd) return;
             if (cmd.guildOnly && !intr.guild) {
                 await intr.reply("このコマンドはサーバー内で使用してください！");

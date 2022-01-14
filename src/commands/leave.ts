@@ -9,11 +9,13 @@ export default new class implements ICommand {
     guildOnly = true;
     execute = async (intr: CommandInteraction) => {
         if (!intr.guildId) return;
-        if (!managers[intr.guildId]) {
+        const manager = managers.get(intr.guildId);
+        if (!manager) {
             await intr.reply("ボイスチャンネルに参加してません！");
             return;
         }
-        managers[intr.guildId]?.conn.disconnect();
+        manager.conn.disconnect(); 
+        // deleteはvoiceStateUpdateイベントの中でされます
         await intr.reply("退出しました！");
     };
 };
