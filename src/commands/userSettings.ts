@@ -1,13 +1,13 @@
 import { ICommand, speakersInfo } from "../bot";
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { CommandInteraction, MessageEmbed } from "discord.js";
+import { MessageEmbed } from "discord.js";
 import { GuildEntity, UserEntity } from "../db";
 
-export default new class implements ICommand {
-    data = new SlashCommandBuilder()
+export default <ICommand>{
+    data: new SlashCommandBuilder()
         .setName("user_settings")
-        .setDescription("ユーザー設定の一覧を表示します！");
-    execute = async (intr: CommandInteraction) => {
+        .setDescription("ユーザー設定の一覧を表示します！"),
+    execute: async intr => {
         if (!intr.guildId) return;
         const user = await UserEntity.get(intr.user.id);
         const guild = await GuildEntity.get(intr.guildId);
@@ -20,5 +20,5 @@ export default new class implements ICommand {
             ],
             ephemeral: true
         });
-    };
+    }
 };

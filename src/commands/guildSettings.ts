@@ -1,14 +1,14 @@
 import { ICommand, speakersInfo } from "../bot";
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { CommandInteraction, MessageEmbed } from "discord.js";
+import { MessageEmbed } from "discord.js";
 import { GuildEntity } from "../db";
 
-export default new class implements ICommand {
-    data = new SlashCommandBuilder()
+export default <ICommand>{
+    data: new SlashCommandBuilder()
         .setName("guild_settings")
-        .setDescription("ユーザー設定の一覧を表示します！");
-    guildOnly = true;
-    execute = async (intr: CommandInteraction) => {
+        .setDescription("ユーザー設定の一覧を表示します！"),
+    guildOnly: true,
+    execute: async intr => {
         if (!intr.guild || !intr.guildId) return;
         const guild = await GuildEntity.get(intr.guildId);
         await intr.reply({
@@ -21,5 +21,5 @@ export default new class implements ICommand {
                 .addField("音高(-0.15~0.15)", guild.pitch.toString())
             ],
         });
-    };
+    }
 };

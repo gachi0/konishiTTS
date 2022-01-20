@@ -1,14 +1,14 @@
 import { ICommand, managers, ConnectionManager } from "../bot";
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { CommandInteraction, GuildMember } from "discord.js";
+import { GuildMember } from "discord.js";
 import { joinVoiceChannel, DiscordGatewayAdapterCreator } from "@discordjs/voice";
 
-export default new class implements ICommand {
-    data = new SlashCommandBuilder()
+export default <ICommand>{
+    data: new SlashCommandBuilder()
         .setName("join")
-        .setDescription("読み上げを開始します！");
-    guildOnly = true;
-    execute = async (intr: CommandInteraction) => {
+        .setDescription("読み上げを開始します！"),
+    guildOnly: true,
+    execute: async intr => {
         if (!(intr.member instanceof GuildMember) || !intr.guild) return;
         const vc = intr.member.voice.channel;
         // vcに参加してない
@@ -27,5 +27,5 @@ export default new class implements ICommand {
         });
         managers.set(intr.guild.id, new ConnectionManager(intr.channelId, conn));
         await intr.reply("参加しました！このチャンネルでのメッセージの読み上げを開始します！");
-    };
+    }
 };
