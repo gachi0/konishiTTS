@@ -1,8 +1,5 @@
 import { Column, Connection, createConnection, Entity, PrimaryColumn } from "typeorm";
 
-// eslintがデコレーターの下に8インデント要求してくる
-/* eslint-disable indent */
-
 @Entity({ name: "user" })
 export class UserEntity {
     @PrimaryColumn({ type: "varchar" })
@@ -68,8 +65,6 @@ export class GuildEntity {
         this.id = id;
     }
 }
-
-/* eslint-enable indent */
 
 export let con: Connection;
 export const DBInit = async () => {

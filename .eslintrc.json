@@ -18,7 +18,12 @@
     "rules": {
         "indent": [
             "error",
-            4
+            4,
+            {
+                "ignoredNodes": [
+                    "ClassBody.body > PropertyDefinition[decorators.length > 0] > .key"
+                ]
+            }
         ],
         "quotes": [
             "error",
