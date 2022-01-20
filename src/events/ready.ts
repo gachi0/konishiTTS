@@ -1,8 +1,3 @@
-import { IEvent } from "../bot";
+import { clienton } from "../bot";
 
-export default new class implements IEvent {
-    name = "ready";
-    execute = async () => {
-        console.log("ログイン完了！");
-    };
-};
+clienton("ready", async () => console.log("ログイン完了！"), true);

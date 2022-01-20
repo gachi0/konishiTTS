@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "@discordjs/builders";
-import { Client, CommandInteraction, Intents, TextBasedChannel } from "discord.js";
+import { Client, ClientEvents, CommandInteraction, Intents, TextBasedChannel } from "discord.js";
 import fs from "fs";
 import axios from "axios";
 import toml from "toml";
@@ -103,7 +103,7 @@ export const speakersInit = async () => {
 };
 
 /** path 以下の ts | js ファイルの default を全部インポート */
-export const allImport = (path: string): Promise<unknown[]> => Promise.all(fs.readdirSync(`./src/${path}`)
+export const allImport = (path: string): Promise<unknown[]> => Promise.all(fs.readdirSync(`${__dirname}/${path}`)
     .filter((f: string) => /(\.js|\.ts)$/.test(f))
     .map(async (f: string) => (await import(`./${path}/${f.slice(0, -3)}`)).default));
 
@@ -114,8 +114,12 @@ export interface ICommand {
     execute(intr: CommandInteraction, ch?: TextBasedChannel): Promise<void>;
 }
 
-export interface IEvent {
-    name: string;
-    once?: boolean;
-    execute(...args: unknown[]): Promise<void>;
-}
+/** listenerの例外をcatchしてイベント登録 */
+export const clienton = <K extends keyof ClientEvents>(
+    name: K,
+    listener: (...args: ClientEvents[K]) => Promise<void>,
+    once = false
+) => {
+    client[once ? "once" : "on"](name, (...args) =>
+        listener(...args).catch(console.error));
+};

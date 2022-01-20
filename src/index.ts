@@ -1,4 +1,4 @@
-import { allImport, client, IEvent, config, speakersInit } from "./bot";
+import { allImport, client, config, speakersInit } from "./bot";
 import { DBInit } from "./db";
 
 + async function () {
@@ -6,10 +6,7 @@ import { DBInit } from "./db";
     await DBInit();
     await speakersInit();
     // イベント登録
-    for (const e of await allImport("events") as IEvent[]) {
-        client[e.once ? "once" : "on"](e.name, (...args) =>
-            e.execute(...args).catch(console.error));
-    }
+    await allImport("events");
     // botにログイン
     await client.login(config.token);
 }();
