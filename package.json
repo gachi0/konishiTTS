@@ -1,10 +1,8 @@
 {
   "dependencies": {
     "@discordjs/builders": "^0.11.0",
-    "@discordjs/rest": "^0.2.0-canary.0",
     "@discordjs/voice": "^0.7.5",
     "axios": "^0.25.0",
-    "discord-api-types": "^0.26.1",
     "discord.js": "^13.6.0",
     "sqlite3": "^5.0.2",
     "toml": "^3.0.0",
@@ -23,11 +21,7 @@
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx ts-node src/index.ts",
-    "cmdguild": "npx ts-node src/deployCmds.ts guild",
-    "cmdapp": "npx ts-node src/deployCmds.ts app",
-    "clearguild": "npx ts-node src/deployCmds.ts clearguild",
-    "clearapp": "npx ts-node src/deployCmds.ts clearapp"
+    "start": "npx ts-node src/index.ts guild"
   },
   "repository": {
     "type": "git",

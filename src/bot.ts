@@ -20,6 +20,27 @@ export const config: {
 
 export const voicevox = axios.create({ baseURL: config.engineUrl });
 
+export const botInit = async () => {
+    for (const c of await allImport("commands") as ICommand[]) {
+        commands.set(c.data.name, c);
+    }
+    const speakers = await voicevox.get("/speakers");
+    for (const i of speakers.data) {
+        for (const j of i.styles) {
+            speakersInfo.set(j.id, `${i.name}(${j.name})`);
+        }
+    }
+};
+
+/** 読み上げするギルド */
+export const managers = new Map<string, ConnectionManager>();
+
+/** コマンド一覧 */
+export const commands = new Map<string, ICommand>();
+
+/** スピーカーの情報 */
+export const speakersInfo = new Map<number, string>();
+
 export class ConnectionManager {
     private player = createAudioPlayer();
     /** 再生待ちの音声たち */
@@ -87,26 +108,6 @@ export class ConnectionManager {
     }
 }
 
-/** 読み上げするギルド */
-export const managers = new Map<string, ConnectionManager>();
-
-/** スピーカーの情報 */
-export const speakersInfo = new Map<number, string>();
-/** スピーカーの情報を取得してspeakersInfoに代入 */
-export const speakersInit = async () => {
-    const speakers = await voicevox.get("/speakers");
-    for (const i of speakers.data) {
-        for (const j of i.styles) {
-            speakersInfo.set(j.id, `${i.name}(${j.name})`);
-        }
-    }
-};
-
-/** path 以下の ts | js ファイルの default を全部インポート */
-export const allImport = (path: string): Promise<unknown[]> => Promise.all(fs.readdirSync(`${__dirname}/${path}`)
-    .filter((f: string) => /(\.js|\.ts)$/.test(f))
-    .map(async (f: string) => (await import(`./${path}/${f.slice(0, -3)}`)).default));
-
 export interface ICommand {
     data: SlashCommandBuilder | SlashCommandSubcommandsOnlyBuilder;
     adminOnly?: boolean;
@@ -123,3 +124,8 @@ export const clienton = <K extends keyof ClientEvents>(
     client[once ? "once" : "on"](name, (...args) =>
         listener(...args).catch(console.error));
 };
+
+/** path 以下の ts | js ファイルの default を全部インポート */
+export const allImport = (path: string): Promise<unknown[]> => Promise.all(fs.readdirSync(`${__dirname}/${path}`)
+    .filter((f: string) => /(\.js|\.ts)$/.test(f))
+    .map(async (f: string) => (await import(`./${path}/${f.slice(0, -3)}`)).default));

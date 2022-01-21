@@ -1,31 +1,31 @@
-import { Routes } from "discord-api-types/v9";
-import { REST } from "@discordjs/rest";
-import { allImport, ICommand, config, speakersInit } from "./bot";
-import { ClientUser } from "discord.js";
-const rest = new REST({ version: "9" }).setToken(config.token);
+import { config, clienton, commands, botInit, client } from "./bot";
 
-+ async function () {
-    await speakersInit();
-    const clientId = (await rest.get(Routes.user("@me")) as ClientUser).id;
+clienton("ready", async client => {
+    console.log("ログイン完了！");
+    const commandData = [...commands.values()].map(c => c.data.toJSON());
     if (process.argv[2] === "guild") {
-        await rest.put(Routes.applicationGuildCommands(clientId, config.guildId), {
-            body: (await allImport("commands") as ICommand[]).map(c => c.data.toJSON())
-        });
+        const guild = await client.guilds.fetch(config.guildId);
+        await guild.commands.set(commandData);
         console.log(`${config.guildId}にコマンドを登録しました！`);
     }
     else if (process.argv[2] === "app") {
-        await rest.put(Routes.applicationCommands(clientId), {
-            body: (await allImport("commands") as ICommand[]).map(c => c.data.toJSON())
-        });
+        await client.application.commands.set(commandData);
         console.log("コマンドを登録しました！（反映には数時間かかります）");
     }
     else if (process.argv[2] === "clearguild") {
-        await rest.put(Routes.applicationGuildCommands(clientId, config.guildId), { body: [] });
+        const guild = await client.guilds.fetch(config.guildId);
+        await guild.commands.set([]);
         console.log(`${config.guildId}からコマンドを削除しました！`);
     }
     else if (process.argv[2] === "clearapp") {
-        await rest.put(Routes.applicationCommands(clientId), { body: [] });
+        await client.application.commands.set([]);
         console.log("コマンドを削除しました！（反映には数時間かかります）");
     }
     else throw Error(`不正な引数: ${process.argv[2]}`);
+    client.destroy();
+}, true);
+
++ async function () {
+    await botInit();
+    await client.login(config.token);
 }();

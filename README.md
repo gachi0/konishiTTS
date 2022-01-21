@@ -16,23 +16,12 @@ npm i
 2. configファイルの設定  
 `config.toml.sample` を `config.toml` にリネーム  
 tokenにはボットのtokenを設定  
-サーバースコープでコマンドを登録する場合は、guildidを設定（任意）
 
-3. コマンドの登録  
-- アプリケーションスコープで登録する場合（推奨）
-```
-npm run cmdapp
-```
-
-- サーバースコープで登録する場合
-```
-npm run cmdguild
-```
-
-4. 実行！  
+3. 実行！  
 ```
 npm start
 ```
+実行すると自動でアプリケーションコマンドが登録されます。反映には1時間ほどかかります。
 
 ## リンク
 - [VOICEVOX](https://voicevox.hiroshiba.jp)

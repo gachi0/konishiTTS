@@ -1,10 +1,10 @@
-import { allImport, client, config, speakersInit } from "./bot";
+import { allImport, botInit, client, config } from "./bot";
 import { DBInit } from "./db";
 
 + async function () {
-    // DB初期化
+    // 初期化処理
     await DBInit();
-    await speakersInit();
+    await botInit();
     // イベント登録
     await allImport("events");
     // botにログイン
