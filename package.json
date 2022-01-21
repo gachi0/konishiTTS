@@ -21,7 +21,11 @@
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx ts-node src/index.ts guild"
+    "start": "npx ts-node src/index.ts",
+    "cmdguild": "npx ts-node src/deployCmds.ts guild",
+    "cmdapp": "npx ts-node src/deployCmds.ts app",
+    "clearguild": "npx ts-node src/deployCmds.ts clearguild",
+    "clearapp": "npx ts-node src/deployCmds.ts clearapp"
   },
   "repository": {
     "type": "git",
