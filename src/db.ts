@@ -35,8 +35,8 @@ export class GuildEntity {
     id: string;
 
     /** 最大で読み上げる文字数 */
-    @Column({ type: "smallint", default: 50 })
-    maxChar = 50;
+    @Column({ type: "smallint", default: 75 })
+    maxChar = 75;
 
     /** 名前を読み上げるかどうか */
     @Column({ type: "boolean", default: false })
