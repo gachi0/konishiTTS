@@ -20,6 +20,6 @@ export default <ICommand>{
         const user = await UserEntity.get(intr.user.id);
         user.speaker = intr.options.getInteger("speaker", true);
         await UserEntity.repo.save(user);
-        intr.reply(`喋る人を${speakersInfo.get(user.speaker)}に変更しました！`);
+        await intr.reply(`喋る人を${speakersInfo.get(user.speaker)}に変更しました！`);
     }
 };

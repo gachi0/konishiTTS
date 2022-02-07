@@ -11,7 +11,7 @@ export default <ICommand>{
         if (!intr.guildId) return;
         const user = await UserEntity.get(intr.user.id);
         const guild = await GuildEntity.get(intr.guildId);
-        intr.reply({
+        await intr.reply({
             embeds: [new MessageEmbed()
                 .setTitle(`${intr.user.username}の設定`)
                 .addField("読み上げ", user.isRead ? "ON" : "OFF")
