@@ -21,7 +21,7 @@ export const config: {
 export const voicevox = axios.create({ baseURL: config.engineUrl });
 
 export const botInit = async () => {
-    for (const c of await allImport("commands") as ICommand[]) {
+    for (const c of await allImport<ICommand>("commands")) {
         commands.set(c.data.name, c);
     }
     const speakers = await voicevox.get("/speakers");
@@ -53,7 +53,7 @@ export class ConnectionManager {
     private isPlaying = false;
 
     /** 再生開始 */
-    private start = async () => {
+    private async start() {
         this.isPlaying = true;
         // queueが空になるまで読み上げる
         while (this.queue[0]) {
@@ -66,18 +66,23 @@ export class ConnectionManager {
             this.queue.shift();
         }
         this.isPlaying = false;
-    };
+    }
 
     /** queueに音声を追加する。再生中でなければ再生を開始する */
-    play = async (resource: AudioResource) => {
+    async play(resource: AudioResource) {
         this.queue.push(resource);
         if (!this.isPlaying) {
             await this.start();
         }
-    };
+    }
+
+    /** 現在読み上げ中の音声をスキップする */
+    async skip() {
+        this.player.stop();
+    }
 
     /** textを読み上げる */
-    speak = async (text: string, guild: GuildEntity, user?: UserEntity) => {
+    async speak(text: string, guild: GuildEntity, user?: UserEntity) {
         // 音声合成用のクエリを生成
         const query = await voicevox.post(
             `/audio_query?text=${encodeURIComponent(text)}&speaker=${user?.speaker ?? guild.speaker}`);
@@ -100,7 +105,7 @@ export class ConnectionManager {
         });
         const resource = createAudioResource(Readable.from(wav.data));
         await this.play(resource);
-    };
+    }
 
     constructor(chId: string, conn: VoiceConnection) {
         this.conn = conn;
@@ -126,6 +131,6 @@ export const clienton = <K extends keyof ClientEvents>(
 };
 
 /** path 以下の ts | js ファイルの default を全部インポート */
-export const allImport = (path: string): Promise<unknown[]> => Promise.all(fs.readdirSync(`${__dirname}/${path}`)
-    .filter((f: string) => /(\.js|\.ts)$/.test(f))
-    .map(async (f: string) => (await import(`./${path}/${f.slice(0, -3)}`)).default));
+export const allImport = <T>(path: string): Promise<T[]> => Promise.all(fs.readdirSync(`${__dirname}/${path}`)
+    .filter(f => /(\.js|\.ts)$/.test(f))
+    .map(async f => (await import(`./${path}/${f.slice(0, -3)}`)).default));

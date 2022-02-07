@@ -1,7 +1,6 @@
 import { config, clienton, commands, botInit, client } from "./bot";
 
 clienton("ready", async client => {
-    console.log("ログイン完了！");
     const commandData = [...commands.values()].map(c => c.data.toJSON());
     if (process.argv[2] === "guild") {
         const guild = await client.guilds.fetch(config.guildId);
