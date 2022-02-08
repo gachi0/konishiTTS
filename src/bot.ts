@@ -77,7 +77,13 @@ export class ConnectionManager {
     }
 
     /** 現在読み上げ中の音声をスキップする */
-    async skip() {
+    skip(count = 1) {
+        if (count < 1) {
+            return;
+        }
+        if (2 <= count) {
+            this.queue = this.queue.slice(count - 1);
+        }
         this.player.stop();
     }
 

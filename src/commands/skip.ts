@@ -4,6 +4,9 @@ import { ICommand, managers } from "../bot";
 export default <ICommand>{
     data: new SlashCommandBuilder()
         .setName("skip")
+        .addIntegerOption(o => o
+            .setName("count")
+            .setDescription("スキップするメッセージの数 (省略された場合は1つのみがスキップされます)"))
         .setDescription("今読み上げているメッセージをスキップします。"),
     guildOnly: true,
     execute: async intr => {
@@ -13,7 +16,8 @@ export default <ICommand>{
             await intr.reply("ボイスチャンネルに入っていません！");
             return;
         }
-        await manager.skip();
+        const count = intr.options.getInteger("count");
+        manager.skip(count ?? 1);
         await intr.reply("スキップしました！");
     }
 };
