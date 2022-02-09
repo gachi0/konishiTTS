@@ -21,9 +21,6 @@ export const config: {
 export const voicevox = axios.create({ baseURL: config.engineUrl });
 
 export const botInit = async () => {
-    for (const c of await allImport<ICommand>("commands")) {
-        commands.set(c.data.name, c);
-    }
     const speakers = await voicevox.get("/speakers");
     for (const i of speakers.data) {
         for (const j of i.styles) {
@@ -34,9 +31,6 @@ export const botInit = async () => {
 
 /** 読み上げするギルド */
 export const managers = new Map<string, ConnectionManager>();
-
-/** コマンド一覧 */
-export const commands = new Map<string, ICommand>();
 
 /** スピーカーの情報 */
 export const speakersInfo = new Map<number, string>();
@@ -135,8 +129,3 @@ export const clienton = <K extends keyof ClientEvents>(
     client[once ? "once" : "on"](name, (...args) =>
         listener(...args).catch(console.error));
 };
-
-/** path 以下の ts | js ファイルの default を全部インポート */
-export const allImport = <T>(path: string): Promise<T[]> => Promise.all(fs.readdirSync(`${__dirname}/${path}`)
-    .filter(f => /(\.js|\.ts)$/.test(f))
-    .map(async f => (await import(`./${path}/${f.slice(0, -3)}`)).default));

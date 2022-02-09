@@ -1,5 +1,6 @@
 import { CommandInteraction, GuildTextBasedChannel, Permissions } from "discord.js";
-import { clienton, commands } from "../bot";
+import { clienton } from "../bot";
+import commands from "../commands";
 
 clienton("interactionCreate", async intr => {
     if (intr instanceof CommandInteraction) {

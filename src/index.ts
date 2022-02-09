@@ -1,4 +1,4 @@
-import { allImport, botInit, client, config } from "./bot";
+import { botInit, client, config } from "./bot";
 import { DBInit } from "./db";
 
 + async function () {
@@ -6,7 +6,7 @@ import { DBInit } from "./db";
     await DBInit();
     await botInit();
     // イベント登録
-    await allImport("events");
+    await import("./events");
     // botにログイン
     await client.login(config.token);
 }();
