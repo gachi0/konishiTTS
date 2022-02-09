@@ -1,4 +1,5 @@
-import { clienton, commands } from "../bot";
+import { clienton } from "../bot";
+import commands from "../commands";
 
 clienton("ready", async client => {
     console.log("ログイン完了！");
