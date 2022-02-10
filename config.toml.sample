@@ -6,4 +6,4 @@ token = ""
 guildId = ""
 
 # VOICEOX engineのAPIのURL (基本そのままでOK)
-engineUrl = "http://localhost:50021"
+engineUrl = "http://127.0.0.1:50021"

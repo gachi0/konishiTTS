@@ -12,15 +12,17 @@ export const client = new Client({
 });
 
 /** 設定 */
-export const config: {
-    token: string,
-    guildId: string,
-    engineUrl: string
-} = toml.parse(fs.readFileSync("./config.toml").toString());
+export let config = {
+    token: "",
+    guildId: "",
+    engineUrl: "http://127.0.0.1:50021"
+};
 
-export const voicevox = axios.create({ baseURL: config.engineUrl });
+export let voicevox = axios.create();
 
 export const botInit = async () => {
+    config = toml.parse(fs.readFileSync("./config.toml").toString());
+    voicevox = axios.create({ baseURL: config.engineUrl });
     const speakers = await voicevox.get("/speakers");
     for (const i of speakers.data) {
         for (const j of i.styles) {
