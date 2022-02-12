@@ -11,7 +11,8 @@ for (const e of fs.readdirSync("dist/exes")) {
     const out = fs.createWriteStream(`dist/${e.split(".")[0]}.zip`);
     const archive = archiver("zip", { zlib: { level: 9 } })
         .file("config.toml.sample", { name: "config.toml" })
-        .file(`dist/exes/${e}`, { name: e });
+        .file(`dist/exes/${e}`, { name: e })
+        .directory("node_modules/sqlite3", "sqlite3");
     archive.pipe(out);
     await archive.finalize();
     fs.rmSync(`dist/exes/${e}`);
