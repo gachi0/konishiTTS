@@ -15,7 +15,7 @@ export default <ICommand>{
     execute: async intr => {
         if (!intr.guildId) return;
         const speed = intr.options.getNumber("speed", true);
-        if (!(0.5 <= speed && speed <= 2)) {
+        if (speed < 0.5 || 2 < speed) {
             await intr.reply({
                 content: "0.5から2.0までの範囲で指定してください！",
                 ephemeral: true
