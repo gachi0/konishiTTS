@@ -19,6 +19,7 @@ export default <ICommand>{
         // 入れない
         if (!vc.joinable) {
             await intr.reply("ボイスチャンネルに参加することができません！権限や人数を確認してください！");
+            return;
         }
         const conn = joinVoiceChannel({
             guildId: intr.guild.id,

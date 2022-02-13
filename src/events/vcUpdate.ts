@@ -32,7 +32,6 @@ clienton("voiceStateUpdate", async (before, after) => {
 /** ボイスチャンネルに参加 */
 const vcJoin = async (member: GuildMember, guild: GuildEntity, vc: vcOrStage) => {
     const manager = managers.get(vc.guild.id);
-
     // 参加したのが自分だった場合、読み上げない
     if (member.id === client.user?.id) {
         return;
