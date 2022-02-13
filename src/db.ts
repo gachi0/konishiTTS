@@ -1,4 +1,5 @@
 import { Column, Connection, createConnection, Entity, PrimaryColumn } from "typeorm";
+import { config } from "./bot";
 
 @Entity({ name: "user" })
 export class UserEntity {
@@ -35,8 +36,8 @@ export class GuildEntity {
     id: string;
 
     /** 最大で読み上げる文字数 */
-    @Column({ type: "smallint", default: 75 })
-    maxChar = 75;
+    @Column({ type: "smallint", default: config.readMaxCharDefault })
+    maxChar = config.readMaxCharDefault;
 
     /** 名前を読み上げるかどうか */
     @Column({ type: "boolean", default: false })

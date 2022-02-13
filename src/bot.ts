@@ -15,16 +15,27 @@ export const client = new Client({
 export let config = {
     token: "",
     guildId: "",
+    readMaxCharLimit: 0,
+    readMaxCharDefault: 0,
     engineUrl: "http://127.0.0.1:50021"
 };
 
-export let voicevox = axios.create();
+let voicevox = axios.create({ baseURL: config.engineUrl });
+
+/** 省略時に追加される音声のクエリ */
+export let skipStrQuery: unknown[] = [];
 
 export const botInit = async () => {
+    // 設定ファイル読み込み
     config = toml.parse(fs.readFileSync("./config.toml").toString());
+    // AxiosInstanceを作る
     voicevox = axios.create({ baseURL: config.engineUrl });
-    const speakers = await voicevox.get("/speakers");
-    for (const i of speakers.data) {
+    // 省略時に追加される音声のクエリを生成
+    skipStrQuery = (await voicevox.post(
+        `/audio_query?text=${encodeURI("以下略")}&speaker=0`))
+        .data.accent_phrases;
+    // スピーカー一覧のデータを取得
+    for (const i of (await voicevox.get("/speakers")).data) {
         for (const j of i.styles) {
             speakersInfo.set(j.id, `${i.name}(${j.name})`);
         }
@@ -89,13 +100,26 @@ export class ConnectionManager {
         const query = await voicevox.post(
             `/audio_query?text=${encodeURIComponent(text)}&speaker=${user?.speaker ?? guild.speaker}`);
 
-        // モーラ数が guild.maxChar を超えていたらスキップ
-        let moras = 0;
-        for (const i of query.data.accent_phrases) {
-            moras += i.moras.length;
-            moras += i.pause_mora ? 1 : 0;
+        let cnt = 0;
+        const resultPhrases = [];
+        for (const phrase of query.data.accent_phrases) {
+            const resultPhrase = { ...phrase, moras: [] };
+            for (const mora of phrase.moras) {
+                resultPhrase.moras.push(mora);
+                cnt++;
+                // モーラ数がguild.maxCharを超えていたら止める
+                if (guild.maxChar < cnt) {
+                    resultPhrases.push(resultPhrase);
+                    resultPhrases.push(...skipStrQuery);
+                    break;
+                }
+            }
+            cnt += phrase.pause_mora ? 1 : 0;
+            if (guild.maxChar < cnt) break;
+            // 超えていなければ現在のphraseを追加する
+            resultPhrases.push(resultPhrase);
         }
-        if (guild.maxChar < moras) return;
+        query.data.accent_phrases = resultPhrases;
 
         // その他の設定を反映
         query.data.speedScale = guild.speed;

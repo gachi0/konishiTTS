@@ -5,5 +5,13 @@ token = ""
 # サーバースコープでコマンドを登録する場合のみ設定します
 guildId = ""
 
+# 「最大で読み上げる文字数」の上限数
+# botを動かすデバイスのスペックに合わせて変更します
+readMaxCharLimit = 240
+
+# 「最大で読み上げる文字数」のデフォルト値
+# botを動かすデバイスのスペックに合わせて変更します
+readMaxCharDefault = 65
+
 # VOICEOX engineのAPIのURL (基本そのままでOK)
 engineUrl = "http://127.0.0.1:50021"

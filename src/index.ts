@@ -3,8 +3,8 @@ import { DBInit } from "./db";
 
 const main = async () => {
     // 初期化処理
-    await DBInit();
     await botInit();
+    await DBInit();
     // イベント登録
     await import("./events");
     // botにログイン
