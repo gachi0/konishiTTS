@@ -1,6 +1,6 @@
 import { ICommand, managers, ConnectionManager } from "../bot";
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { GuildMember } from "discord.js";
+import { GuildMember, TextChannel } from "discord.js";
 import { joinVoiceChannel, DiscordGatewayAdapterCreator } from "@discordjs/voice";
 
 export default <ICommand>{
@@ -19,6 +19,11 @@ export default <ICommand>{
         // 入れない
         if (!vc.joinable) {
             await intr.reply("ボイスチャンネルに参加することができません！権限や人数を確認してください！");
+            return;
+        }
+        // チャンネルが見えない
+        if (!(intr.channel as TextChannel)?.viewable) {
+            await intr.reply("チャンネルを見る権限がないため、メッセージを読み上げることが出来ません…");
             return;
         }
         const conn = joinVoiceChannel({
