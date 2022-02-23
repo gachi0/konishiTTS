@@ -11,6 +11,7 @@ export default <ICommand>{
             .setRequired(true))
         .setDescription("Botが名前を読み上げるかどうかを切り替えます！"),
     guildOnly: true,
+    adminOnly: true,
     execute: async intr => {
         if (!intr.guildId) return;
         const readName = intr.options.getBoolean("read_name", true);
