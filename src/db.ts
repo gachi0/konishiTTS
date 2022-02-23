@@ -43,6 +43,10 @@ export class GuildEntity {
     @Column({ type: "boolean", default: false })
     readName = false;
 
+    /** ボイスチャンネルに参加してきた人の名前を読み上げるかどうか */
+    @Column({ type: "boolean", default: true })
+    joinerReadName = true;
+
     /** 喋る人 */
     @Column({ type: "smallint", default: 0 })
     speaker = 0;
