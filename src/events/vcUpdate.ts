@@ -34,8 +34,9 @@ const vcJoin = async (member: GuildMember, guild: GuildEntity, vc: vcOrStage) =>
     if (member.id === client.user?.id) {
         return;
     }
-    if (manager && manager.conn.joinConfig.channelId === vc.id) {
-        await manager.speak(`よお${member.displayName}`, guild);
+    if (manager && manager.conn.joinConfig.channelId === vc.id && guild.joinerReadName) {
+        await manager.speak(
+            guild.joinerText.replace("{name}", member.displayName), guild);
     }
 };
 
