@@ -1,4 +1,4 @@
-import { GuildMember, StageChannel, VoiceChannel } from "discord.js";
+import { GuildMember, GuildTextBasedChannel, StageChannel, VoiceChannel } from "discord.js";
 import { client, clienton, managers } from "../bot";
 import { GuildEntity } from "../db";
 
@@ -18,14 +18,12 @@ clienton("voiceStateUpdate", async (before, after) => {
     }
     // 退出
     else if (!after.channel) {
-        // 自分が通話から抜けたら
-        if (after.member.id === client.user?.id) {
-            managers.delete(before.channel.guild.id);
-        }
+        await vcLeave(after.member, guild, before.channel);
     }
     // 移動
     else {
         await vcJoin(after.member, guild, after.channel);
+        await vcLeave(after.member, guild, before.channel);
     }
 });
 
@@ -38,5 +36,20 @@ const vcJoin = async (member: GuildMember, guild: GuildEntity, vc: vcOrStage) =>
     }
     if (manager && manager.conn.joinConfig.channelId === vc.id) {
         await manager.speak(`よお${member.displayName}`, guild);
+    }
+};
+
+const vcLeave = async (member: GuildMember, guild: GuildEntity, vc: vcOrStage) => {
+    // 自分が通話から抜けたら
+    const manager = managers.get(vc.guild.id);
+    if (!manager) return;
+    if (member.id === client.user?.id) {
+        managers.delete(guild.id);
+    }
+    // VCに自分しかいなくなったら
+    if (vc.members.size === 1) {
+        manager.conn.disconnect();
+        const ch = await vc.guild.channels.fetch(manager.chId);
+        await (ch as GuildTextBasedChannel)?.send("VCに誰もいなくなったため、切断されました。");
     }
 };

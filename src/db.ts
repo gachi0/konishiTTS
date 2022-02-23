@@ -14,10 +14,6 @@ export class UserEntity {
     @Column({ type: "boolean", default: true })
     isRead = true;
 
-    /** 読み上げのピッチ (-0.15~0.15) */
-    @Column({ type: "float", nullable: true })
-    pitch?: number;
-
     static get repo() {
         return con.getRepository(UserEntity);
     }
@@ -54,10 +50,6 @@ export class GuildEntity {
     /** 読み上げのスピード (0.5~2.0) */
     @Column({ type: "float", default: 1 })
     speed = 1;
-
-    /** 読み上げのピッチ (-0.15~0.15) */
-    @Column({ type: "float", default: 0 })
-    pitch = 0;
 
     static get repo() {
         return con.getRepository(GuildEntity);
