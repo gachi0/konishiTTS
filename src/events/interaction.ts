@@ -1,4 +1,4 @@
-import { CommandInteraction, GuildTextBasedChannel, Permissions } from "discord.js";
+import { CommandInteraction, GuildTextBasedChannel } from "discord.js";
 import { clienton } from "../bot";
 import commands from "../commands";
 
@@ -10,7 +10,7 @@ clienton("interactionCreate", async intr => {
             await intr.reply("このコマンドはサーバー内で使用してください！");
             return;
         }
-        if (cmd.adminOnly && !(intr.member?.permissions as Permissions).has("ADMINISTRATOR")) {
+        if (cmd.adminOnly && !intr.member?.permissions?.has?.("ADMINISTRATOR")) {
             await intr.reply({ content: "このコマンドは管理者のみが使えます！", ephemeral: true });
             return;
         }
@@ -20,7 +20,7 @@ clienton("interactionCreate", async intr => {
             if (!ch) return;
         }
         await cmd.execute(intr, ch).catch(async e =>
-            await intr[intr.replied || intr.deferred ? "followUp" : "reply"](`エラーが発生しました…\r\`\`\`\r${e}\r\`\`\``)
+            await intr[intr.replied || intr.deferred ? "followUp" : "reply"](`エラーが発生しました…\n\`\`\`\n${e}\n\`\`\``)
         );
     }
 });
