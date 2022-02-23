@@ -123,6 +123,7 @@ export class ConnectionManager {
 
         // その他の設定を反映
         query.data.speedScale = guild.speed;
+        query.data.volumeScale = 1.3;
 
         //音声合成
         const wav = await voicevox.post(`/synthesis?speaker=${user?.speaker ?? guild.speaker}`, query.data, {
