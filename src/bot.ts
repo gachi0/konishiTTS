@@ -125,7 +125,7 @@ export class ConnectionManager {
         query.data.speedScale = guild.speed;
 
         //音声合成
-        const wav = await voicevox.post("/synthesis?speaker=0", query.data, {
+        const wav = await voicevox.post(`/synthesis?speaker=${user?.speaker ?? guild.speaker}`, query.data, {
             responseType: "arraybuffer"
         });
         const resource = createAudioResource(Readable.from(wav.data));
