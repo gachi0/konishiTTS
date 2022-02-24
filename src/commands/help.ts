@@ -28,18 +28,15 @@ export default <ICommand>{
             const embed = new MessageEmbed({
                 title: cmd.data.name,
                 description: cmd.data.description,
-                fields: [
-                    {
-                        name: "情報",
-                        value: `実行可能な人: ${cmd.adminOnly ? "管理人のみ" : "全員"}\n`
-                            + `実行可能な場所: ${cmd.guildOnly ? "サーバー内のみ" : "全て"}`
-                    }
-                ]
             });
+            embed.addField("情報",
+                `実行可能な人: ${cmd.adminOnly ? "管理人のみ" : "全員"}\n`
+                + `実行可能な場所: ${cmd.guildOnly ? "サーバー内のみ" : "全て"}`);
+
             if (cmd.data instanceof SlashCommandBuilder && cmd.data.options.length) {
                 embed.addField("オプション",
                     cmd.data.options.map(o => o.toJSON()).reduce((l, r) =>
-                        `${l}\n\n**\`${r.name}\`** ${r.required ? "[必須]" : "[省略可]"}[${optionTypes[r.type - 1]}]${r.description}`, ""));
+                        `${l}\n\n**\`${r.name}\`** ${r.required ? "[必須]" : "[省略可]"}[${optionTypes[r.type - 1]}]\n${r.description}`, ""));
             }
             await intr.reply({ embeds: [embed] });
         }
