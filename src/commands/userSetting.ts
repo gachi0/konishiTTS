@@ -13,7 +13,7 @@ export default <ICommand>{
         .addIntegerOption(o => o
             .setName("speaker")
             .setDescription("喋る人")
-            .addChoices([...speakersInfo.entries()].map(s => [s[1], s[0]]))),
+            .addChoices([...speakersInfo].map(s => [s[1], s[0]]))),
 
     execute: async intr => {
 

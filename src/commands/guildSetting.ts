@@ -8,6 +8,10 @@ export default <ICommand>{
         .setName("guild_setting")
         .setDescription("Botのサーバー設定を変更します。オプションなしで送信された場合、現在の設定の一覧を表示します。")
         .addIntegerOption(o => o
+            .setName("speaker")
+            .setDescription("サーバーのデフォルトの音声")
+            .addChoices([...speakersInfo].map(s => [s[1], s[0]])))
+        .addIntegerOption(o => o
             .setName("max_char")
             .setDescription("読み上げる最大文字数"))
         .addBooleanOption(o => o
@@ -30,6 +34,7 @@ export default <ICommand>{
         if (!intr.guild || !intr.guildId) return;
         const guild = await GuildEntity.get(intr.guildId);
 
+        const speaker = intr.options.getInteger("speaker");
         const maxChar = intr.options.getInteger("max_char");
         const readName = intr.options.getBoolean("read_name");
         const speed = intr.options.getNumber("speed");
@@ -37,7 +42,7 @@ export default <ICommand>{
         const vcJoinRead = intr.options.getBoolean("vc_join_read");
 
         // オプションが何も設定されていなかったら
-        if ([maxChar, joinText, speed, vcJoinRead, readName].every(o => o === null)) {
+        if ([speaker, maxChar, joinText, speed, vcJoinRead, readName].every(o => o === null)) {
             await intr.reply({
                 embeds: [new MessageEmbed()
                     .setTitle(`${intr.guild.name}の設定`)
@@ -53,6 +58,11 @@ export default <ICommand>{
         }
         // オプション指定ありだった場合
         const embed = new MessageEmbed({ title: `${intr.guild.name}の設定` });
+        if (speaker !== null) {
+            embed.addField("デフォルトの声",
+                `${speakersInfo.get(guild.speaker)} から ${speakersInfo.get(speaker)} に変更しました。`);
+            guild.speaker = speaker;
+        }
         if (maxChar !== null) {
             if (0 <= maxChar && maxChar <= config.readMaxCharLimit) {
                 embed.addField("読み上げる文字数の上限",
