@@ -1,6 +1,5 @@
 import { SlashCommandBuilder, SlashCommandStringOption } from "@discordjs/builders";
 import { MessageEmbed } from "discord.js";
-import commands from "./helpOtherCommands";
 import { ICommand } from "../bot";
 
 // コマンドのオプション（ApplicationCommandOptionTypeに対応）
@@ -8,15 +7,21 @@ const optionTypes = [
     "サブコマンド", "サブコマンドグループ", "文字列", "整数", "真偽値",
     "ユーザー", "チャンネル", "ロール", "メンション可能", "数値"];
 
-export default <ICommand>{
-    data: new SlashCommandBuilder()
-        .setName("help")
+const commands = new Map<string, ICommand>();
+
+export const setHelpComamands = (cmds: Map<string, ICommand>) => {
+    (help.data as SlashCommandBuilder)
         .addStringOption(new SlashCommandStringOption()
             .setName("command")
             .setDescription("使い方が知りたいコマンド名")
-            .addChoices([...commands].map(c => [c[0], c[0]])))
-        .setDescription("botの使い方を表示します。"),
+            .addChoices([...cmds].map(c => [c[0], c[0]])));
+    [...cmds.values()].forEach(c => commands.set(c.data.name, c));
+};
 
+const help: ICommand = {
+    data: new SlashCommandBuilder()
+        .setName("help")
+        .setDescription("botの使い方を表示します。"),
     execute: async intr => {
         const option = intr.options.getString("command");
         if (option) {
@@ -53,3 +58,5 @@ export default <ICommand>{
         }
     }
 };
+
+export default help;
