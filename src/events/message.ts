@@ -17,8 +17,10 @@ clienton("messageCreate", async msg => {
     const guild = await GuildEntity.get(msg.guildId);
     // 読み上げるための文字列
     let text = guild.readName ? `${msg.author.username} ${msg.content}` : msg.content;
-    // URLを読み上げないようにする
+    // いろいろ読み上げないようにする
     text = text.replace(/https?:\/\S*/g, "url");
+    text = text.replace(/<(@[!&]?|#)\d+>/g, "メンション");
+    text = text.replace(/(?<=<a?:\w+):\d+>|<a?:(?=\w+:\d+>)/g, ""); // 絵文字名は残し絵文字idを消す
     // 文字列を読み上げる
     await manager.speak(text, guild, user);
 });
