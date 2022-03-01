@@ -6,6 +6,7 @@ import toml from "toml";
 import { AudioPlayerStatus, AudioResource, createAudioPlayer, createAudioResource, entersState, VoiceConnection } from "@discordjs/voice";
 import { GuildEntity, UserEntity } from "./db";
 import { Readable } from "stream";
+import { spawn } from "child_process";
 
 export const client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MESSAGES]
@@ -17,6 +18,7 @@ export let config = {
     guildId: "",
     readMaxCharLimit: 0,
     readMaxCharDefault: 0,
+    enginePath: "",
     engineUrl: "http://127.0.0.1:50021"
 };
 
@@ -28,6 +30,24 @@ export let skipStrQuery: unknown[] = [];
 export const botInit = async () => {
     // 設定ファイル読み込み
     config = toml.parse(fs.readFileSync("./config.toml").toString());
+    // エンジンを起動
+    const vvProc = spawn(config.enginePath);
+    vvProc.stdout?.on("data", d => console.log(d.toString()));
+    await new Promise<void>(rs => {
+        vvProc.on("close", rs);
+        vvProc.stderr?.on("data", (b: Buffer) => {
+            const d = b.toString();
+            console.log(d);
+            if (d.match(/^ERROR:\s+\[Errno 10048\]/)) {
+                console.log("エンジンが既に起動中です");
+                rs();
+            }
+            else if (d.match(/^INFO:\s+Uvicorn running on/)) {
+                console.log("エンジンを起動しました");
+                rs();
+            }
+        });
+    });
     // AxiosInstanceを作る
     voicevox = axios.create({ baseURL: config.engineUrl });
     // 省略時に追加される音声のクエリを生成

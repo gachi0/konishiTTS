@@ -13,5 +13,8 @@ readMaxCharLimit = 240
 # botを動かすデバイスのスペックに合わせて変更します
 readMaxCharDefault = 65
 
+# voicevoxのエンジンのファイルパス
+enginePath = "C:/Program Files/VOICEVOX/run.exe"
+
 # VOICEOX engineのAPIのURL (基本そのままでOK)
 engineUrl = "http://127.0.0.1:50021"
