@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, SlashCommandStringOption } from "@discordjs/builders";
 import { MessageEmbed } from "discord.js";
-import { ICommand } from "../bot";
+import { ICommand, speakersName } from "../bot";
 
 // コマンドのオプション（ApplicationCommandOptionTypeに対応）
 const optionTypes = [
@@ -51,8 +51,10 @@ const help: ICommand = {
                 description: "説明",
                 fields: [...commands.values()].map(c => ({
                     name: `/${c.data.name}`,
-                    value: c.data.description
-                }))
+                    value: c.data.description,
+                    inline: true
+                })),
+                footer: { text: `クレジット\nVOICEVOX: ${speakersName.join(", ")}` }
             });
             await intr.reply({ embeds: [embed] });
         }

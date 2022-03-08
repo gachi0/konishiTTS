@@ -6,7 +6,7 @@ import { UserEntity } from "../db";
 export default <ICommand>{
     data: new SlashCommandBuilder()
         .setName("user_setting")
-        .setDescription("Botのユーザー設定をします。オプションなしで送信された場合、現在の設定の一覧を表示します。")
+        .setDescription("Botのユーザー設定を変更します。オプションなしで送信された場合、現在の設定の一覧を表示します。")
         .addBooleanOption(o => o
             .setName("read_message")
             .setDescription("自分のメッセージを読み上げるかどうか。読み上げる場合はTrueを、読み上げたくない場合はFalseを指定してください"))

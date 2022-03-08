@@ -14,6 +14,7 @@ const engineSetUp = async () => {
             .data.accent_phrases;
         // スピーカー一覧のデータを取得
         for (const i of (await voicevox.get("/speakers")).data) {
+            speakersName.push(i.name);
             for (const j of i.styles) {
                 speakersInfo.set(j.id, `${i.name}(${j.name})`);
             }
@@ -24,7 +25,7 @@ const engineSetUp = async () => {
         const vvProc = spawn(config.enginePath); // 変なパス入れると無限ループ
         vvProc.stdout?.on("data", d => console.log(d.toString()));
         const isSuccess = await new Promise<true | Error>(rs => {
-            vvProc.on("close", c => rs(new Error(`VOICEVOX Engineがコード${c}で終了しました。`)));
+            vvProc.on("close", c => rs(new Error(`エンジンがコード${c}で終了しました。`)));
             vvProc.on("error", e => rs(e));
             vvProc.stderr?.on("data", (b: Buffer) => {
                 const d = b.toString();
@@ -64,6 +65,7 @@ export const client = new Client({
 export let config = {
     token: "",
     guildId: "",
+    inviteUrl: "",
     readMaxCharLimit: 0,
     readMaxCharDefault: 0,
     enginePath: "",
@@ -81,6 +83,9 @@ export const managers = new Map<string, ConnectionManager>();
 
 /** スピーカーの情報 */
 export const speakersInfo = new Map<number, string>();
+
+/** スピーカーの名前一覧 */
+export const speakersName: string[] = [];
 
 /** コマンド */
 export interface ICommand {

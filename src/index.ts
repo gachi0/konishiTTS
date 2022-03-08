@@ -13,8 +13,6 @@ const main = async () => {
 
 main().catch(e => {
     console.error(e);
-
-
     console.log("エンターキーを押すと終了します。");
     process.stdin.resume();
     process.stdin.on("data", () => process.exit(0));
