@@ -1,7 +1,12 @@
 # botのトークン(必須)
 token = ""
 
-# コマンドを登録するサーバーのid(任意)
+# Helpコマンドに貼られるBotの招待URL
+# "" に設定すると招待URLは貼られません。
+# {clientId} は Botのクライアントidに置換されます。
+inviteUrl = "https://discord.com/api/oauth2/authorize?client_id={clientId}&permissions=3146752&scope=bot%20applications.commands"
+
+# コマンドを登録するサーバーのid
 # サーバースコープでコマンドを登録する場合のみ設定します
 guildId = ""
 

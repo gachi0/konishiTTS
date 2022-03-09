@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, SlashCommandStringOption } from "@discordjs/builders";
 import { MessageEmbed } from "discord.js";
-import { ICommand, speakersName } from "../bot";
+import { client, config, ICommand, speakersName } from "../bot";
 
 // コマンドのオプション（ApplicationCommandOptionTypeに対応）
 const optionTypes = [
@@ -41,22 +41,36 @@ const help: ICommand = {
             if (cmd.data instanceof SlashCommandBuilder && cmd.data.options.length) {
                 embed.addField("オプション",
                     cmd.data.options.map(o => o.toJSON()).reduce((l, r) =>
-                        `${l}\n\n**\`${r.name}\`** ${r.required ? "[必須]" : "[省略可]"}[${optionTypes[r.type - 1]}]\n${r.description}`, ""));
+                        `${l}\n\n**\`${r.name}\`** ${r.required ? "[必須]" : "[省略可]"}`
+                        + `[${optionTypes[r.type - 1]}]\n${r.description}`, ""));
             }
             await intr.reply({ embeds: [embed] });
         }
         else {
-            const embed = new MessageEmbed({
-                title: "botの使い方",
-                description: "説明",
-                fields: [...commands.values()].map(c => ({
-                    name: `/${c.data.name}`,
-                    value: c.data.description,
-                    inline: true
-                })),
-                footer: { text: `クレジット\nVOICEVOX: ${speakersName.join(", ")}` }
+            await intr.reply({
+                embeds: [
+                    {
+                        title: "概要",
+                        description: "VOICEVOXの読み上げBotです。\n"
+                            + "`/help`コマンドで読み上げを開始します！\n",
+                        fields: [{
+                            name: "リンク",
+                            value: "・[リポジトリ](https://github.com/gachi0/konishiTTS)\n"
+                                + "・[VOICEVOX](https://voicevox.hiroshiba.jp)\n"
+                                + ("" === config.inviteUrl ? "" : `・[招待URL](${config.inviteUrl.replace("{clientId}", `${client.user?.id}`)})\n`),
+                        }],
+                        footer: { text: `クレジット\nVOICEVOX: ${speakersName.join(", ")}` }
+                    },
+                    {
+                        title: "コマンド一覧",
+                        fields: [...commands.values()].map(c => ({
+                            name: `/${c.data.name}`,
+                            value: c.data.description,
+                            inline: true
+                        })),
+                    }
+                ]
             });
-            await intr.reply({ embeds: [embed] });
         }
     }
 };
