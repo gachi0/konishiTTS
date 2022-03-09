@@ -2,13 +2,9 @@
 token = ""
 
 # Helpコマンドに貼られるBotの招待URL
-# "" に設定すると招待URLは貼られません。
+# 招待URLを貼られたくない場合は、"" に設定してください。
 # {clientId} は Botのクライアントidに置換されます。
 inviteUrl = "https://discord.com/api/oauth2/authorize?client_id={clientId}&permissions=3146752&scope=bot%20applications.commands"
-
-# コマンドを登録するサーバーのid
-# サーバースコープでコマンドを登録する場合のみ設定します
-guildId = ""
 
 # 「最大で読み上げる文字数」の上限数
 # botを動かすデバイスのスペックに合わせて変更します
@@ -20,6 +16,10 @@ readMaxCharDefault = 65
 
 # voicevoxのエンジンのファイルパス
 enginePath = 'C:\Program Files\VOICEVOX\run.exe'
+
+# コマンドを登録するサーバーのid
+# サーバースコープでコマンドを登録する場合のみ設定します
+guildId = ""
 
 # VOICEOX engineのAPIのURL (基本そのままでOK)
 engineUrl = "http://127.0.0.1:50021"
