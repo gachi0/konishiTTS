@@ -22,7 +22,7 @@ const engineSetUp = async () => {
     }
     catch (error) {
         // エンジンが起動していなかったら、起動する
-        const vvProc = spawn(config.enginePath); // 変なパス入れると無限ループ
+        const vvProc = spawn(config.enginePath);
         vvProc.stdout?.on("data", d => console.log(d.toString()));
         const isSuccess = await new Promise<true | Error>(rs => {
             vvProc.on("close", c => rs(new Error(`エンジンがコード${c}で終了しました。`)));
