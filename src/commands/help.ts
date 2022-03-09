@@ -23,6 +23,7 @@ const help: ICommand = {
         .setName("help")
         .setDescription("botの使い方を表示します。"),
     execute: async intr => {
+        const invite = `・[招待URL](${config.inviteUrl.replace("{clientId}", `${client.user?.id}`)})\n`;
         const option = intr.options.getString("command");
         if (option) {
             const cmd = commands.get(option);
@@ -57,7 +58,7 @@ const help: ICommand = {
                             name: "リンク",
                             value: "・[リポジトリ](https://github.com/gachi0/konishiTTS)\n"
                                 + "・[VOICEVOX](https://voicevox.hiroshiba.jp)\n"
-                                + ("" === config.inviteUrl ? "" : `・[招待URL](${config.inviteUrl.replace("{clientId}", `${client.user?.id}`)})\n`),
+                                + ("" === config.inviteUrl ? "" : invite),
                         }],
                         footer: { text: `クレジット\nVOICEVOX: ${speakersName.join(", ")}` }
                     },
