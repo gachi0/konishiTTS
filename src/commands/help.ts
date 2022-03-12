@@ -53,7 +53,7 @@ const help: ICommand = {
                     {
                         title: "概要",
                         description: "VOICEVOXの読み上げBotです。\n"
-                            + "`/help`コマンドで読み上げを開始します！\n",
+                            + "`/join`コマンドで読み上げを開始します！\n",
                         fields: [{
                             name: "リンク",
                             value: "・[リポジトリ](https://github.com/gachi0/konishiTTS)\n"
