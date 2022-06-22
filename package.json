@@ -4,7 +4,7 @@
     "@discordjs/voice": "^0.8.0",
     "axios": "^0.26.0",
     "discord.js": "^13.6.0",
-    "sqlite3": "^5.0.2",
+    "sqlite3": "^5.0.3",
     "toml": "^3.0.0",
     "tweetnacl": "^1.0.3",
     "typeorm": "^0.2.43"
