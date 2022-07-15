@@ -10,7 +10,7 @@ clienton("messageCreate", async msg => {
     const manager = managers.get(msg.guildId);
     if (!manager) return;
     // 読み上げ対象のチャンネルでなければスキップ
-    if (msg.channelId !== manager.chId) return;
+    if (![manager.chId, manager.conn.joinConfig.channelId].includes(msg.channelId)) return;
     // 設定を取得
     const user = await UserEntity.get(msg.author.id);
     if (!user.isRead) return;
