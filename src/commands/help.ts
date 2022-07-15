@@ -14,7 +14,7 @@ export const setHelpComamands = (cmds: Map<string, ICommand>) => {
         .addStringOption(new SlashCommandStringOption()
             .setName("command")
             .setDescription("使い方が知りたいコマンド名")
-            .addChoices([...cmds].map(c => [c[0], c[0]])));
+            .addChoices(...[...cmds].map(c => ({ name: c[0], value: c[0] }))));
     [...cmds.values()].forEach(c => commands.set(c.data.name, c));
 };
 

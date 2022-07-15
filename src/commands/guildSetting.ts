@@ -10,7 +10,7 @@ export default <ICommand>{
         .addIntegerOption(o => o
             .setName("speaker")
             .setDescription("サーバーのデフォルトの音声")
-            .addChoices([...speakersInfo].map(s => [s[1], s[0]])))
+            .addChoices(...[...speakersInfo].map(s => ({ name: s[1], value: s[0] }))))
         .addIntegerOption(o => o
             .setName("max_char")
             .setDescription("読み上げる最大文字数"))
