@@ -41,9 +41,9 @@ const vcJoin = async (member: GuildMember, guild: GuildEntity, vc: vcOrStage) =>
 };
 
 const vcLeave = async (member: GuildMember, guild: GuildEntity, vc: vcOrStage) => {
-    // 自分が通話から抜けたら
     const manager = managers.get(vc.guild.id);
-    if (!manager) return;
+    if (!manager || manager.chId === vc.id) return;
+    // 自分が通話から抜けたら
     if (member.id === client.user?.id) {
         managers.delete(guild.id);
     }

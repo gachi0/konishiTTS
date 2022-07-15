@@ -7,7 +7,7 @@ export default class ConnectionManager {
     private player = createAudioPlayer();
     /** 再生待ちの音声たち */
     private queue: AudioResource[] = [];
-    /** 読み上げるチャンネルのid */
+    /** 読み上げるボイスチャンネルのid */
     chId;
     /** Botの接続 */
     conn;
