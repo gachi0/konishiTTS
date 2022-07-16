@@ -17,6 +17,8 @@ clienton("messageCreate", async msg => {
     const guild = await GuildEntity.get(msg.guildId);
     // 読み上げるための文字列
     let text = guild.readName ? `${msg.author.username} ${msg.content}` : msg.content;
+    // ファイルが送られてきていたらファイルの件数を読み上げ
+    text += msg.attachments.size ? `${msg.attachments.size}件のファイル` : "";
     // いろいろ読み上げないようにする
     text = text.replace(/https?:\/\S*/g, "url");
     text = text.replace(/<(@[!&]?|#)\d+>/g, "メンション");
