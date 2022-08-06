@@ -1,5 +1,4 @@
-import { SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "@discordjs/builders";
-import { Client, ClientEvents, CommandInteraction, Intents, TextBasedChannel } from "discord.js";
+import { ChatInputCommandInteraction, Client, ClientEvents, GatewayIntentBits, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder, TextBasedChannel } from "discord.js";
 import fs from "fs";
 import axios from "axios";
 import toml from "toml";
@@ -58,7 +57,7 @@ export const botInit = async () => {
 
 /** Botクライアント */
 export const client = new Client({
-    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MESSAGES]
+    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
 });
 
 /** 設定 */
@@ -92,7 +91,7 @@ export interface ICommand {
     data: SlashCommandBuilder | SlashCommandSubcommandsOnlyBuilder;
     adminOnly?: boolean;
     guildOnly?: boolean;
-    execute(intr: CommandInteraction, ch?: TextBasedChannel): Promise<void>;
+    execute(intr: ChatInputCommandInteraction, ch?: TextBasedChannel): Promise<void>;
 }
 
 /** listenerの例外をcatchしてイベント登録 */

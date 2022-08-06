@@ -1,7 +1,6 @@
 import { config, ICommand, speakersInfo } from "../bot";
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { MessageEmbed } from "discord.js";
 import { GuildEntity } from "../db";
+import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
 
 export default <ICommand>{
     data: new SlashCommandBuilder()
@@ -44,70 +43,90 @@ export default <ICommand>{
         // オプションが何も設定されていなかったら
         if ([speaker, maxChar, joinText, speed, vcJoinRead, readName].every(o => o === null)) {
             await intr.reply({
-                embeds: [new MessageEmbed()
-                    .setTitle(`${intr.guild.name}の設定`)
-                    .addField("デフォルトの声", `${speakersInfo.get(guild.speaker)}`)
-                    .addField("読み上げる文字数の上限", guild.maxChar.toString())
-                    .addField("名前の読み上げ", guild.readName ? "ON" : "OFF")
-                    .addField("話速(0.5~2.0)", guild.speed.toString())
-                    .addField("VC入室時に読み上げられる文字列", `\`${guild.joinerText}\``)
-                    .addField("VC入室者の名前読み上げ", guild.joinerReadName ? "ON" : "OFF")
-                ]
+                embeds: [{
+                    title: `${intr.guild.name}の設定`,
+                    fields: [
+                        { name: "デフォルトの声", value: `${speakersInfo.get(guild.speaker)}` },
+                        { name: "読み上げる文字数の上限", value: guild.maxChar.toString() },
+                        { name: "名前の読み上げ", value: guild.readName ? "ON" : "OFF" },
+                        { name: "話速(0.5~2.0)", value: guild.speed.toString() },
+                        { name: "VC入室時に読み上げられる文字列", value: `\`${guild.joinerText}\`` },
+                        { name: "VC入室者の名前読み上げ", value: guild.joinerReadName ? "ON" : "OFF" },
+                    ]
+                }]
             });
             return;
         }
         // オプション指定ありだった場合
-        const embed = new MessageEmbed({ title: `${intr.guild.name}の設定` });
+
+        const embed = new EmbedBuilder({ title: `${intr.guild.name}の設定` });
         if (speaker !== null) {
-            embed.addField("デフォルトの声",
-                `${speakersInfo.get(guild.speaker)} から ${speakersInfo.get(speaker)} に変更しました。`);
+            embed.addFields([{
+                name: "デフォルトの声",
+                value: `${speakersInfo.get(guild.speaker)} から ${speakersInfo.get(speaker)} に変更しました。`
+            }]);
             guild.speaker = speaker;
         }
         if (maxChar !== null) {
             if (0 <= maxChar && maxChar <= config.readMaxCharLimit) {
-                embed.addField("読み上げる文字数の上限",
-                    `${guild.maxChar} から ${maxChar} に変更しました。`);
+                embed.addFields([{
+                    name: "読み上げる文字数の上限",
+                    value: `${guild.maxChar} から ${maxChar} に変更しました。`
+                }]);
                 guild.maxChar = maxChar;
             }
             else {
-                embed.addField("読み上げる文字数の上限",
-                    `0から${config.readMaxCharLimit}までの範囲で指定してください！\n`
-                    + `指定された値: ${maxChar}`);
+                embed.addFields([{
+                    name: "読み上げる文字数の上限",
+                    value: `0から${config.readMaxCharLimit}までの範囲で指定してください！\n`
+                        + `指定された値: ${maxChar}`
+                }]);
             }
         }
         if (readName !== null) {
-            embed.addField("名前の読み上げ",
-                `名前の読み上げを ${guild.readName} から ${readName} に変更しました。`);
+            embed.addFields([{
+                name: "名前の読み上げ",
+                value: `名前の読み上げを ${guild.readName} から ${readName} に変更しました。`
+            }]);
             guild.readName = readName;
         }
         if (speed !== null) {
             if (0.5 <= speed && speed <= 2) {
-                embed.addField("話速",
-                    `${guild.speed} から ${speed} に変更しました。`);
+                embed.addFields([{
+                    name: "話速",
+                    value: `${guild.speed} から ${speed} に変更しました。`
+                }]);
                 guild.speed = speed;
             }
             else {
-                embed.addField("読み上げる文字数の上限",
-                    "0.5から2.0までの範囲で指定してください！\n"
-                    + `指定された値: ${maxChar}`);
+                embed.addFields([{
+                    name: "読み上げる文字数の上限",
+                    value: "0.5から2.0までの範囲で指定してください！\n"
+                        + `指定された値: ${maxChar}`
+                }]);
             }
         }
         if (joinText) {
             if (joinText.length <= 100) {
-                embed.addField("VC入室時に読み上げられる文字列",
-                    `\`${guild.joinerText}\` から \`${joinText}\` に変更しました。`);
+                embed.addFields([{
+                    name: "VC入室時に読み上げられる文字列",
+                    value: `\`${guild.joinerText}\` から \`${joinText}\` に変更しました。`
+                }]);
                 guild.joinerText = joinText;
             }
             else {
-                embed.addField("VC入室時に読み上げられる文字列",
-                    "100文字以下で指定してください！\n"
-                    + `指定された文字数: ${joinText.length}`);
+                embed.addFields([{
+                    name: "VC入室時に読み上げられる文字列",
+                    value: "100文字以下で指定してください！\n"
+                        + `指定された文字数: ${joinText.length}`
+                }]);
             }
         }
         if (vcJoinRead !== null) {
-            embed.addField("VC入室時の名前読み上げ",
-                `${guild.joinerReadName} から ${vcJoinRead} に変更しました。`
-            );
+            embed.addFields([{
+                name: "VC入室時の名前読み上げ",
+                value: `${guild.joinerReadName} から ${vcJoinRead} に変更しました。`
+            }]);
             guild.joinerReadName = vcJoinRead;
         }
         await GuildEntity.repo.save(guild);

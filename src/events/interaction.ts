@@ -1,16 +1,16 @@
-import { CommandInteraction, GuildTextBasedChannel } from "discord.js";
+import { ChatInputCommandInteraction, GuildTextBasedChannel, PermissionFlagsBits, PermissionsBitField } from "discord.js";
 import { clienton } from "../bot";
 import commands from "../commands";
 
 clienton("interactionCreate", async intr => {
-    if (intr instanceof CommandInteraction) {
+    if (intr instanceof ChatInputCommandInteraction) {
         const cmd = commands.get(intr.commandName);
         if (!cmd) return;
         if (cmd.guildOnly && !intr.guild) {
             await intr.reply("このコマンドはサーバー内で使用してください！");
             return;
         }
-        if (cmd.adminOnly && !intr.member?.permissions?.has?.("ADMINISTRATOR")) {
+        if (cmd.adminOnly && !(intr.member?.permissions as Readonly<PermissionsBitField>)?.has?.(PermissionFlagsBits.Administrator)) { // 暫定
             await intr.reply({ content: "このコマンドは管理者のみが使えます！", ephemeral: true });
             return;
         }

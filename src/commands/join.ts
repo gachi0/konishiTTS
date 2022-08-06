@@ -1,6 +1,5 @@
 import { ICommand, managers } from "../bot";
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { GuildMember, TextChannel } from "discord.js";
+import { GuildMember, SlashCommandBuilder, TextChannel } from "discord.js";
 import { joinVoiceChannel, DiscordGatewayAdapterCreator } from "@discordjs/voice";
 import ConnectionManager from "../connectionManager";
 

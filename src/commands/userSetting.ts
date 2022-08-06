@@ -1,6 +1,5 @@
 import { ICommand, speakersInfo } from "../bot";
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { MessageEmbed } from "discord.js";
+import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import { UserEntity } from "../db";
 
 export default <ICommand>{
@@ -25,25 +24,33 @@ export default <ICommand>{
         // オプションが何も設定されていなかったら
         if ([readMessage, speaker].every(o => o === null)) {
             await intr.reply({
-                embeds: [new MessageEmbed()
-                    .setTitle(`${intr.user.username}の設定`)
-                    .addField("読み上げ", user.isRead ? "ON" : "OFF")
-                    .addField("声", nowSpeaker)
-                ],
+                embeds: [{
+                    title: `${intr.user.username}の設定`,
+                    fields: [
+                        { name: "読み上げ", value: user.isRead ? "ON" : "OFF" },
+                        { name: "声", value: nowSpeaker }
+                    ]
+                }],
                 ephemeral: true
             });
+            0;
             return;
         }
 
-        const embed = new MessageEmbed({ title: `${intr.user.username}の設定` });
+
+        const embed = new EmbedBuilder({ title: `${intr.user.username}の設定` });
         if (readMessage !== null) {
-            embed.addField("読み上げ",
-                `${user.isRead} から ${readMessage} に変更しました。`);
+            embed.addFields([{
+                name: "読み上げ",
+                value: `${user.isRead} から ${readMessage} に変更しました。`
+            }]);
             user.isRead = readMessage;
         }
         if (speaker !== null) {
-            embed.addField("喋る人",
-                `${nowSpeaker} から ${speakersInfo.get(speaker)} に変更しました。`);
+            embed.addFields([{
+                name: "喋る人",
+                value: `${nowSpeaker} から ${speakersInfo.get(speaker)} に変更しました。`
+            }]);
             user.speaker = speaker;
         }
         await UserEntity.repo.save(user);

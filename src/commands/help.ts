@@ -1,5 +1,4 @@
-import { SlashCommandBuilder, SlashCommandStringOption } from "@discordjs/builders";
-import { MessageEmbed } from "discord.js";
+import { EmbedBuilder, SlashCommandBuilder, SlashCommandStringOption } from "discord.js";
 import { client, config, ICommand, speakersName } from "../bot";
 
 // コマンドのオプション（ApplicationCommandOptionTypeに対応）
@@ -31,19 +30,23 @@ const help: ICommand = {
                 await intr.reply("存在しないコマンドです…");
                 return;
             }
-            const embed = new MessageEmbed({
+            const embed = new EmbedBuilder({
                 title: cmd.data.name,
                 description: cmd.data.description,
             });
-            embed.addField("情報",
-                `実行可能な人: ${cmd.adminOnly ? "管理人のみ" : "全員"}\n`
-                + `実行可能な場所: ${cmd.guildOnly ? "サーバー内のみ" : "全て"}`);
+            embed.addFields([{
+                name: "情報",
+                value: `実行可能な人: ${cmd.adminOnly ? "管理人のみ" : "全員"}\n`
+                    + `実行可能な場所: ${cmd.guildOnly ? "サーバー内のみ" : "全て"}`
+            }]);
 
             if (cmd.data instanceof SlashCommandBuilder && cmd.data.options.length) {
-                embed.addField("オプション",
-                    cmd.data.options.map(o => o.toJSON()).reduce((l, r) =>
+                embed.addFields([{
+                    name: "オプション",
+                    value: cmd.data.options.map(o => o.toJSON()).reduce((l, r) =>
                         `${l}\n\n**\`${r.name}\`** ${r.required ? "[必須]" : "[省略可]"}`
-                        + `[${optionTypes[r.type - 1]}]\n${r.description}`, ""));
+                        + `[${optionTypes[r.type - 1]}]\n${r.description}`, "")
+                }]);
             }
             await intr.reply({ embeds: [embed] });
         }
