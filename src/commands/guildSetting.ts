@@ -1,31 +1,29 @@
-import { config, ICommand, speakersInfo } from "../bot";
+import { addSpeakerOption, config, ICommand, speakersInfo } from "../bot";
 import { GuildEntity } from "../db";
 import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
 
-export default <ICommand>{
-    data: new SlashCommandBuilder()
-        .setName("guild_setting")
-        .setDescription("Botのサーバー設定を変更します。オプションなしで送信された場合、現在の設定の一覧を表示します。")
-        .addIntegerOption(o => o
-            .setName("speaker")
-            .setDescription("サーバーのデフォルトの音声")
-            .addChoices(...[...speakersInfo].map(s => ({ name: s[1], value: s[0] }))))
-        .addIntegerOption(o => o
-            .setName("max_char")
-            .setDescription("読み上げる最大文字数"))
-        .addBooleanOption(o => o
-            .setName("read_name")
-            .setDescription("メッセージの送信者の名前を読み上げるかどうか。読み上げる場合はTrueを、読み上げない場合はFalseを設定してください。"))
-        .addNumberOption(o => o
-            .setName("speed")
-            .setDescription("読み上げの速度。0.5から2.0までの範囲で指定してください"))
-        .addStringOption(o => o
-            .setName("join_text")
-            .setDescription("VC入室時に読み上げられる文字列。{name}は入室したユーザー名に置き換えられます。"))
-        .addBooleanOption(o => o
-            .setName("vc_join_read")
-            .setDescription("VC入室時に入室者の名前を読み上げるかどうか。読み上げる場合はTrueを、読み上げない場合はFalseを設定してください。")),
+let data = new SlashCommandBuilder()
+    .setName("guild_setting")
+    .addIntegerOption(o => o
+        .setName("max_char")
+        .setDescription("読み上げる最大文字数"))
+    .addBooleanOption(o => o
+        .setName("read_name")
+        .setDescription("メッセージの送信者の名前を読み上げるかどうか。読み上げる場合はTrueを、読み上げない場合はFalseを設定してください。"))
+    .addNumberOption(o => o
+        .setName("speed")
+        .setDescription("読み上げの速度。0.5から2.0までの範囲で指定してください"))
+    .addStringOption(o => o
+        .setName("join_text")
+        .setDescription("VC入室時に読み上げられる文字列。{name}は入室したユーザー名に置き換えられます。"))
+    .addBooleanOption(o => o
+        .setName("vc_join_read")
+        .setDescription("VC入室時に入室者の名前を読み上げるかどうか。読み上げる場合はTrueを、読み上げない場合はFalseを設定してください。"))
+    .setDescription("Botのサーバー設定を変更します。オプションなしで送信された場合、現在の設定の一覧を表示します。");
+data = addSpeakerOption(data);
 
+export default <ICommand>{
+    data: data,
     guildOnly: true,
     adminOnly: true,
 
@@ -33,12 +31,20 @@ export default <ICommand>{
         if (!intr.guild || !intr.guildId) return;
         const guild = await GuildEntity.get(intr.guildId);
 
-        const speaker = intr.options.getInteger("speaker");
         const maxChar = intr.options.getInteger("max_char");
         const readName = intr.options.getBoolean("read_name");
         const speed = intr.options.getNumber("speed");
         const joinText = intr.options.getString("join_text");
         const vcJoinRead = intr.options.getBoolean("vc_join_read");
+
+        let speaker: number | null = null;
+
+        for (let i = 1; i < Math.ceil(speakersInfo.size / 25) + 1; i++) {
+            const s = intr.options.getInteger(`speaker${i}`);
+            if (s) {
+                speaker = s;
+            }
+        }
 
         // オプションが何も設定されていなかったら
         if ([speaker, maxChar, joinText, speed, vcJoinRead, readName].every(o => o === null)) {
