@@ -1,4 +1,4 @@
-import { Column, Connection, createConnection, Entity, PrimaryColumn } from "typeorm";
+import { Column, DataSource, Entity, PrimaryColumn } from "typeorm";
 import { config } from "./bot";
 
 @Entity({ name: "user" })
@@ -19,7 +19,7 @@ export class UserEntity {
     }
 
     static get = async (id: string) =>
-        await UserEntity.repo.findOne(id) ?? new UserEntity(id);
+        await UserEntity.repo.findOne({ where: { id: id } }) ?? new UserEntity(id);
 
     constructor(id: string) {
         this.id = id;
@@ -60,20 +60,21 @@ export class GuildEntity {
     }
 
     static get = async (id: string) =>
-        await GuildEntity.repo.findOne(id) ?? new GuildEntity(id);
+        await GuildEntity.repo.findOne({ where: { id: id } }) ?? new GuildEntity(id);
 
     constructor(id: string) {
         this.id = id;
     }
 }
 
-export let con: Connection;
+export const con: DataSource = new DataSource({
+    type: "sqlite",
+    database: "data.sqlite3",
+    entities: [UserEntity, GuildEntity],
+    synchronize: true,
+    logging: true
+});
+
 export const DBInit = async () => {
-    con = await createConnection({
-        type: "sqlite",
-        database: "data.sqlite3",
-        entities: [UserEntity, GuildEntity],
-        synchronize: true,
-        logging: true
-    });
+    await con.initialize();
 };
