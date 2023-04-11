@@ -6,7 +6,7 @@
     "libsodium-wrappers": "^0.7.11",
     "sqlite3": "^5.1.6",
     "toml": "^3.0.0",
-    "typeorm": "^0.3.12"
+    "typeorm": "^0.3.14"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.55.0",
