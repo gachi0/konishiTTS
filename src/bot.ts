@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, Client, ClientEvents, GatewayIntentBits, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder, TextBasedChannel } from "discord.js";
+import { ChatInputCommandInteraction, Client, ClientEvents, GatewayIntentBits, SlashCommandBuilder, SlashCommandOptionsOnlyBuilder, SlashCommandSubcommandsOnlyBuilder, TextBasedChannel } from "discord.js";
 import fs from "fs";
 import axios from "axios";
 import toml from "toml";
@@ -105,7 +105,7 @@ export const clienton = <K extends keyof ClientEvents>(
 };
 
 /** コマンドにSpeakerを変更するオプションを追加 */
-export const addSpeakerOption = (cmd: SlashCommandBuilder) => {
+export const addSpeakerOption = (cmd: SlashCommandOptionsOnlyBuilder) => {
     for (let i = 0; i < Math.ceil(speakersInfo.size / 25); i++) {
         cmd.addIntegerOption(o => o
             .setName(`speaker${i + 1}`)

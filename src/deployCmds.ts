@@ -10,7 +10,7 @@ clienton("ready", async client => {
     }
     else if (process.argv[2] === "app") {
         await client.application.commands.set(commandData);
-        console.log("コマンドを登録しました！（反映には数時間かかります）");
+        console.log("コマンドを登録しました！");
     }
     else if (process.argv[2] === "clearguild") {
         const guild = await client.guilds.fetch(config.guildId);
@@ -25,7 +25,7 @@ clienton("ready", async client => {
     client.destroy();
 }, true);
 
-+ async function () {
+(async () => {
     await botInit();
     await client.login(config.token);
-}();
+})();

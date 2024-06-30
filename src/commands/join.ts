@@ -1,6 +1,6 @@
 import { ICommand, managers } from "../bot";
 import { GuildMember, SlashCommandBuilder, TextChannel } from "discord.js";
-import { joinVoiceChannel, DiscordGatewayAdapterCreator } from "@discordjs/voice";
+import { joinVoiceChannel } from "@discordjs/voice";
 import ConnectionManager from "../connectionManager";
 
 export default <ICommand>{
@@ -29,7 +29,7 @@ export default <ICommand>{
         const conn = joinVoiceChannel({
             guildId: intr.guild.id,
             channelId: vc.id,
-            adapterCreator: intr.guild.voiceAdapterCreator as DiscordGatewayAdapterCreator
+            adapterCreator: intr.guild.voiceAdapterCreator
         });
         managers.set(intr.guild.id, new ConnectionManager(intr.channelId, conn));
         await intr.reply("参加しました！このチャンネルでのメッセージの読み上げを開始します！");

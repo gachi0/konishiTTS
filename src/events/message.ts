@@ -14,9 +14,26 @@ clienton("messageCreate", async msg => {
     // 設定を取得
     const user = await UserEntity.get(msg.author.id);
     if (!user.isRead) return;
-    const guild = await GuildEntity.get(msg.guildId);
+    const guild = await GuildEntity.get(msg.guildId, true);
     // 読み上げるための文字列
-    let text = guild.readName ? `${msg.author.username} ${msg.content}` : msg.content;
+    let text = msg.content;
+
+    // バックスラッシュを辞書に登録するとバグる
+    // 辞書を置換 
+    // textから"{}"を削除する
+    text = text.replace(/[{}]/g, "");
+    for (const dict of guild.dict) {
+        // 一度置換した文字列が2回以上置換されないように一時的に{}で囲う
+        text = text.replace(
+            new RegExp(`(?<!{)${dict.word}(?!})`, "g"),
+            `{${dict.yomi}}`
+        );
+    }
+    // "{}"を消す
+    text = text.replace(/[{}]/g, "");
+
+    // readNameがtrueだったら名前をtextに追加
+    text = guild.readName ? `${msg.author.username} ${text}` : text;
     // ファイルが送られてきていたらファイルの件数を読み上げ
     text += msg.attachments.size ? `${msg.attachments.size}件のファイル` : "";
     // いろいろ読み上げないようにする

@@ -1,4 +1,4 @@
-import { GuildMember, GuildTextBasedChannel, StageChannel, VoiceChannel } from "discord.js";
+import { GuildMember, StageChannel, VoiceChannel } from "discord.js";
 import { client, clienton, managers } from "../bot";
 import { GuildEntity } from "../db";
 
@@ -50,7 +50,6 @@ const vcLeave = async (member: GuildMember, guild: GuildEntity, vc: vcOrStage) =
     // VCに自分しかいなくなったら
     if (vc.members.size === 1) {
         manager.conn.disconnect();
-        const ch = await vc.guild.channels.fetch(manager.chId);
-        await (ch as GuildTextBasedChannel)?.send("VCに誰もいなくなったため、切断されました。");
+        await vc.send("VCに誰もいなくなったため、切断されました。");
     }
 };

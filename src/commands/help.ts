@@ -39,7 +39,6 @@ const help: ICommand = {
                 value: `実行可能な人: ${cmd.adminOnly ? "管理人のみ" : "全員"}\n`
                     + `実行可能な場所: ${cmd.guildOnly ? "サーバー内のみ" : "全て"}`
             }]);
-
             if (cmd.data instanceof SlashCommandBuilder && cmd.data.options.length) {
                 embed.addFields([{
                     name: "オプション",

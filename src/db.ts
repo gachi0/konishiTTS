@@ -1,4 +1,4 @@
-import { Column, DataSource, Entity, PrimaryColumn } from "typeorm";
+import { Column, DataSource, Entity, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn, Unique } from "typeorm";
 import { config } from "./bot";
 
 @Entity({ name: "user" })
@@ -55,22 +55,65 @@ export class GuildEntity {
     @Column({ type: "float", default: 1 })
     speed = 1;
 
+    /** 辞書 */
+    @OneToMany(() => DictEntity, d => d.guildId)
+    dict!: DictEntity[];
+
     static get repo() {
         return con.getRepository(GuildEntity);
     }
 
-    static get = async (id: string) =>
-        await GuildEntity.repo.findOne({ where: { id: id } }) ?? new GuildEntity(id);
+    static async get(id: string, dict = false): Promise<GuildEntity> {
+        let guild = await GuildEntity.repo.findOne({ where: { id: id }, relations: dict ? ["dict"] : [] });
+        if (guild) return guild;
+
+        // なかったら
+        guild = new GuildEntity(id);
+        await GuildEntity.repo.save(guild);
+        guild.dict = [];
+        return guild;
+    }
 
     constructor(id: string) {
         this.id = id;
     }
 }
 
+@Entity({ name: "dict" })
+@Unique(["guildId", "word"])
+export class DictEntity {
+    @PrimaryGeneratedColumn()
+    id!: number;
+
+    @ManyToOne(() => GuildEntity, g => g.id)
+    guildId: string;
+
+    @Column({ type: "varchar" })
+    authorId: string;
+
+    @Column({ type: "varchar" })
+    word: string;
+
+    @Column({ type: "varchar" })
+    yomi: string;
+
+    static get repo() {
+        return con.getRepository(DictEntity);
+    }
+
+    constructor(authorId: string, word: string, yomi: string, guildId: string) {
+        this.authorId = authorId;
+        this.word = word;
+        this.yomi = yomi;
+        this.guildId = guildId;
+    }
+}
+
+
 export const con: DataSource = new DataSource({
     type: "sqlite",
     database: "data.sqlite3",
-    entities: [UserEntity, GuildEntity],
+    entities: [UserEntity, GuildEntity, DictEntity],
     synchronize: true,
     logging: true
 });
