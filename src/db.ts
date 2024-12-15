@@ -15,14 +15,14 @@ export class UserEntity {
     isRead = true;
 
     static get repo() {
-        return con.getRepository(UserEntity);
+      return con.getRepository(UserEntity);
     }
 
     static get = async (id: string) =>
-        await UserEntity.repo.findOne({ where: { id: id } }) ?? new UserEntity(id);
+      await UserEntity.repo.findOne({ where: { id: id } }) ?? new UserEntity(id);
 
     constructor(id: string) {
-        this.id = id;
+      this.id = id;
     }
 }
 
@@ -60,22 +60,22 @@ export class GuildEntity {
     dict!: DictEntity[];
 
     static get repo() {
-        return con.getRepository(GuildEntity);
+      return con.getRepository(GuildEntity);
     }
 
     static async get(id: string, dict = false): Promise<GuildEntity> {
-        let guild = await GuildEntity.repo.findOne({ where: { id: id }, relations: dict ? ["dict"] : [] });
-        if (guild) return guild;
+      let guild = await GuildEntity.repo.findOne({ where: { id: id }, relations: dict ? ["dict"] : [] });
+      if (guild) return guild;
 
-        // なかったら
-        guild = new GuildEntity(id);
-        await GuildEntity.repo.save(guild);
-        guild.dict = [];
-        return guild;
+      // なかったら
+      guild = new GuildEntity(id);
+      await GuildEntity.repo.save(guild);
+      guild.dict = [];
+      return guild;
     }
 
     constructor(id: string) {
-        this.id = id;
+      this.id = id;
     }
 }
 
@@ -98,26 +98,26 @@ export class DictEntity {
     yomi: string;
 
     static get repo() {
-        return con.getRepository(DictEntity);
+      return con.getRepository(DictEntity);
     }
 
     constructor(authorId: string, word: string, yomi: string, guildId: string) {
-        this.authorId = authorId;
-        this.word = word;
-        this.yomi = yomi;
-        this.guildId = guildId;
+      this.authorId = authorId;
+      this.word = word;
+      this.yomi = yomi;
+      this.guildId = guildId;
     }
 }
 
 
 export const con: DataSource = new DataSource({
-    type: "sqlite",
-    database: "data.sqlite3",
-    entities: [UserEntity, GuildEntity, DictEntity],
-    synchronize: true,
-    logging: true
+  type: "sqlite",
+  database: "data.sqlite3",
+  entities: [UserEntity, GuildEntity, DictEntity],
+  synchronize: true,
+  logging: true
 });
 
 export const DBInit = async () => {
-    await con.initialize();
+  await con.initialize();
 };
