@@ -1,6 +1,7 @@
-import { addSpeakerOption, ICommand, speakersInfo } from "../bot";
+import { ICommand, speakersInfo } from "../bot";
 import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import { UserEntity } from "../db";
+import { addSpeakerOption } from "../domain/util";
 
 let data = new SlashCommandBuilder()
     .setName("user_setting")
@@ -38,7 +39,6 @@ export default <ICommand>{
                 }],
                 ephemeral: true
             });
-            0;
             return;
         }
 

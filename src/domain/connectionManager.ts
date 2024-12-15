@@ -1,7 +1,7 @@
 import { AudioPlayerStatus, AudioResource, createAudioPlayer, createAudioResource, entersState, VoiceConnection } from "@discordjs/voice";
-import { GuildEntity, UserEntity } from "./db";
+import { GuildEntity, UserEntity } from "../db";
 import { Readable } from "stream";
-import { skipStrQuery, voicevox } from "./bot";
+import { skipStrQuery, voicevox } from "../bot";
 
 export default class ConnectionManager {
     private player = createAudioPlayer();
@@ -80,7 +80,7 @@ export default class ConnectionManager {
         query.data.speedScale = guild.speed;
         query.data.volumeScale = 1.3;
 
-        //音声合成
+        // 音声合成
         const wav = await voicevox.post(`/synthesis?speaker=${user?.speaker ?? guild.speaker}`, query.data, {
             responseType: "arraybuffer"
         });

@@ -1,6 +1,6 @@
 import { ActivityType } from "discord.js";
-import { clienton } from "../bot";
 import commands from "../commands";
+import { clienton } from "../domain/util";
 
 clienton("ready", async client => {
     console.log("ログイン完了！");

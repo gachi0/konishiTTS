@@ -23,13 +23,11 @@ export default <ICommand>{
                 embeds: [{
                     title: "辞書一覧",
                     description: descrtiption,
-                    fields: nowPageDict()
-                        .map(d => (
-                            {
-                                name: d.word,
-                                value: `読み: \`${d.yomi}\`\n作者: <@${d.authorId}>`,
-                                inline: true
-                            }))
+                    fields: nowPageDict().map(d => ({
+                        name: d.word,
+                        value: `読み: \`${d.yomi}\`\n作者: <@${d.authorId}>`,
+                        inline: true
+                    }))
                 }],
                 components: [{
                     type: ComponentType.ActionRow,

@@ -1,8 +1,10 @@
-import { addSpeakerOption, config, ICommand, speakersInfo } from "../bot";
+import { config, ICommand, speakersInfo } from "../bot";
 import { GuildEntity } from "../db";
 import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { addSpeakerOption } from "../domain/util";
 
-let data = new SlashCommandBuilder()
+
+const data = addSpeakerOption(new SlashCommandBuilder()
     .setName("guild_setting")
     .addIntegerOption(o => o
         .setName("max_char")
@@ -19,8 +21,8 @@ let data = new SlashCommandBuilder()
     .addBooleanOption(o => o
         .setName("vc_join_read")
         .setDescription("VC入室時に入室者の名前を読み上げるかどうか。読み上げる場合はTrueを、読み上げない場合はFalseを設定してください。"))
-    .setDescription("Botのサーバー設定を変更します。オプションなしで送信された場合、現在の設定の一覧を表示します。");
-data = addSpeakerOption(data);
+    .setDescription("Botのサーバー設定を変更します。オプションなしで送信された場合、現在の設定の一覧を表示します。")
+);
 
 export default <ICommand>{
     data: data,

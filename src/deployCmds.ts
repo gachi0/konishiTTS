@@ -1,5 +1,6 @@
-import { config, clienton, botInit, client } from "./bot";
+import { config, botInit, client } from "./bot";
 import commands from "./commands";
+import { clienton } from "./domain/util";
 
 clienton("ready", async client => {
     const commandData = [...commands.values()].map(c => c.data.toJSON());

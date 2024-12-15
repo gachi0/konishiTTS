@@ -1,7 +1,7 @@
 import { ICommand, managers } from "../bot";
 import { GuildMember, SlashCommandBuilder, TextChannel } from "discord.js";
 import { joinVoiceChannel } from "@discordjs/voice";
-import ConnectionManager from "../connectionManager";
+import ConnectionManager from "../domain/connectionManager";
 
 export default <ICommand>{
     data: new SlashCommandBuilder()
