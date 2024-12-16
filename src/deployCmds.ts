@@ -1,4 +1,4 @@
-import { config, client } from "./bot";
+import { config, client, botInit } from "./bot";
 import commands from "./commands";
 import { createEvent } from "./domain/util";
 
