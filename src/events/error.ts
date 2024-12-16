@@ -1,3 +1,3 @@
-import { clienton } from "../domain/util";
+import { createEvent } from "../domain/util";
 
-clienton("error", async (e) => console.log(e));
+createEvent("error", async (e) => console.log(e));

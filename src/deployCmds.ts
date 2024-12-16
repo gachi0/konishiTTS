@@ -1,8 +1,8 @@
-import { config, botInit, client } from "./bot";
+import { config, client } from "./bot";
 import commands from "./commands";
-import { clienton } from "./domain/util";
+import { createEvent } from "./domain/util";
 
-clienton("ready", async client => {
+createEvent("ready", async client => {
   const commandData = [...commands.values()].map(c => c.data.toJSON());
   if (process.argv[2] === "guild") {
     const guild = await client.guilds.fetch(config.guildId);
@@ -24,7 +24,7 @@ clienton("ready", async client => {
   }
   else throw Error(`不正な引数: ${process.argv[2]}`);
   client.destroy();
-}, true);
+});
 
 (async () => {
   await botInit();

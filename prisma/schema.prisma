@@ -1,0 +1,41 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model KUser {
+  id       String  @id
+  speaker  Int     @default(0)
+  isRead   Boolean @default(true)
+  joinText String  @default("よお{name}")
+  KWord    KWord[]
+}
+
+model KGuild {
+  id         String  @id
+  maxChar    Int     @default(25)
+  speaker    Int     @default(0)
+  speed      Float   @default(1)
+  readName   Boolean @default(false)
+  vcReadName Boolean @default(true)
+  joinText   String  @default("よお{name}")
+  words      KWord[]
+}
+
+model KWord {
+  id   Int    @id @default(autoincrement())
+  word String
+  yomi String
+
+  author  KUser  @relation(fields: [kUserId], references: [id])
+  kUserId String
+  Guild   KGuild @relation(fields: [guildId], references: [id])
+  guildId String
+}

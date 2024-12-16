@@ -1,9 +1,9 @@
 import { GuildMember, VoiceBasedChannel } from "discord.js";
-import { client, managers } from "../bot";
-import { GuildEntity } from "../db";
-import { clienton } from "../domain/util";
+import { client, db, managers } from "../bot";
+import { createEvent } from "../domain/util";
+import { upsertQuery } from "../domain/db";
 
-clienton("voiceStateUpdate", async (before, after) => {
+createEvent("voiceStateUpdate", async (before, after) => {
 
   if (!after.member) return;
 
@@ -31,13 +31,15 @@ const vcJoin = async (member: GuildMember, vc: VoiceBasedChannel) => {
   const manager = managers.get(vc.guild.id);
   if (!manager) return;
 
-  const guild = await GuildEntity.get(vc.guild.id);
+  const guild = await db.kGuild.upsert(upsertQuery(vc.guildId));
+  const user = await db.kUser.upsert(upsertQuery(member.id));
 
   // 参加したのが自分だった場合、読み上げない
   if (member.id === client.user?.id) return;
-  if (manager.conn.joinConfig.channelId === vc.id && guild.joinerReadName) {
+  if (!guild.vcReadName) return;
+  if (manager.conn.joinConfig.channelId === vc.id) {
     await manager.speak(
-      guild.joinerText.replace("{name}", member.displayName), guild
+      guild.joinText.replace("{name}", member.displayName), guild, user
     );
   }
 };
@@ -46,7 +48,7 @@ const vcLeave = async (member: GuildMember, vc: VoiceBasedChannel) => {
   const manager = managers.get(vc.guild.id);
   if (!manager || manager.chId === vc.id) return;
 
-  const guild = await GuildEntity.get(vc.guild.id);
+  const guild = await db.kGuild.upsert(upsertQuery(vc.guildId));
 
   // 自分が通話から抜けたら
   if (member.id === client.user?.id) {

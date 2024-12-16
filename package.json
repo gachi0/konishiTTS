@@ -1,14 +1,14 @@
 {
   "dependencies": {
     "@discordjs/voice": "^0.18.0",
+    "@prisma/client": "^6.0.1",
     "axios": "^1.7.9",
     "discord.js": "^14.16.3",
-    "libsodium-wrappers": "^0.7.15",
-    "sqlite3": "^5.1.7",
-    "toml": "^3.0.0",
-    "typeorm": "^0.3.20"
+    "dotenv": "^16.4.7",
+    "libsodium-wrappers": "^0.7.15"
   },
   "devDependencies": {
+    "prisma": "^6.0.1",
     "typescript": "^5.7.2"
   },
   "name": "konishi-tts",

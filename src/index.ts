@@ -1,12 +1,11 @@
+import { spawn } from "child_process";
 import { botInit, client, config } from "./bot";
-import { DBInit } from "./db";
+
+
 
 const main = async () => {
   // 初期化処理
   await botInit();
-  await DBInit();
-  // イベント登録
-  await import("./events");
   // botにログイン
   await client.login(config.token);
 };

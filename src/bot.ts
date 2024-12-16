@@ -1,9 +1,61 @@
 import { ChatInputCommandInteraction, Client, ClientEvents, GatewayIntentBits, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder, TextBasedChannel } from "discord.js";
 import fs from "fs";
 import axios from "axios";
-import toml from "toml";
 import { spawn } from "child_process";
 import ConnectionManager from "./domain/connectionManager";
+import 'dotenv/config';
+import { PrismaClient } from "@prisma/client";
+import { configDotenv } from "dotenv";
+
+export const db = new PrismaClient();
+
+/** Botクライアント */
+export const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent
+  ]
+});
+
+/** 設定 */
+export let config = {
+  token: "",
+  guildId: "",
+  inviteUrl: "",
+  readMaxCharLimit: 0,
+  readMaxCharDefault: 0,
+  enginePath: "",
+  engineUrl: "http://127.0.0.1:50021"
+};
+
+/** VOICEVOXクライアント */
+export let voicevox = axios.create({ baseURL: config.engineUrl });
+
+/** 省略時に追加される音声のクエリ */
+export let skipStrQuery: unknown[] = [];
+
+/** 読み上げするギルド */
+export const managers = new Map<string, ConnectionManager>();
+
+/** スピーカーの情報 */
+export const speakersInfo = new Map<number, string>();
+
+/** スピーカーの名前一覧 */
+export const speakersName: string[] = [];
+
+/** コマンド */
+export interface ICommand {
+  data: SlashCommandBuilder | SlashCommandSubcommandsOnlyBuilder;
+  adminOnly?: boolean;
+  guildOnly?: boolean;
+  execute(intr: ChatInputCommandInteraction, ch?: TextBasedChannel): Promise<void>;
+}
+
+
+export interface IClientEvent<K extends keyof ClientEvents> {
+  name: K;
+  listener: (...args: ClientEvents[K]) => Promise<void>;
+}
 
 const engineSetUp = async () => {
   try {
@@ -48,54 +100,13 @@ const engineSetUp = async () => {
 /** 初期化 */
 export const botInit = async () => {
   // 設定ファイル読み込み
-  config = toml.parse(fs.readFileSync("./config.toml").toString());
+  config.enginePath = process.env.enginePath ?? '';
+  config.engineUrl = process.env.engineUrl ?? '';
+  config.guildId = process.env.guildId ?? '';
+  config.token = process.env.token ?? '';
+
   // AxiosInstanceを作る
   voicevox = axios.create({ baseURL: config.engineUrl });
   // エンジンを起動
   await engineSetUp();
 };
-
-/** Botクライアント */
-export const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
-});
-
-/** 設定 */
-export let config = {
-  token: "",
-  guildId: "",
-  inviteUrl: "",
-  readMaxCharLimit: 0,
-  readMaxCharDefault: 0,
-  enginePath: "",
-  engineUrl: "http://127.0.0.1:50021"
-};
-
-/** VOICEVOXクライアント */
-export let voicevox = axios.create({ baseURL: config.engineUrl });
-
-/** 省略時に追加される音声のクエリ */
-export let skipStrQuery: unknown[] = [];
-
-/** 読み上げするギルド */
-export const managers = new Map<string, ConnectionManager>();
-
-/** スピーカーの情報 */
-export const speakersInfo = new Map<number, string>();
-
-/** スピーカーの名前一覧 */
-export const speakersName: string[] = [];
-
-/** コマンド */
-export interface ICommand {
-    data: SlashCommandBuilder | SlashCommandSubcommandsOnlyBuilder;
-    adminOnly?: boolean;
-    guildOnly?: boolean;
-    execute(intr: ChatInputCommandInteraction, ch?: TextBasedChannel): Promise<void>;
-}
-
-
-export interface IClientEvent<K extends keyof ClientEvents> {
-    name: K;
-    listener: (...args: ClientEvents[K]) => Promise<void>;
-}

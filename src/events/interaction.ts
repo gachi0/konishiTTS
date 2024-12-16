@@ -1,8 +1,8 @@
 import { ChatInputCommandInteraction, GuildTextBasedChannel, PermissionsBitField } from "discord.js";
-import { clienton } from "../domain/util";
+import { createEvent } from "../domain/util";
 import commands from "../commands";
 
-clienton("interactionCreate", async intr => {
+createEvent("interactionCreate", async intr => {
   if (intr instanceof ChatInputCommandInteraction) {
     const cmd = commands.get(intr.commandName);
 
@@ -10,10 +10,10 @@ clienton("interactionCreate", async intr => {
 
     if ( // 管理者じゃない場合
       cmd.adminOnly &&
-            !(
-              intr.member?.permissions instanceof PermissionsBitField &&
-                intr.member.permissions.has("Administrator")
-            )
+      !(
+        intr.member?.permissions instanceof PermissionsBitField &&
+        intr.member.permissions.has("Administrator")
+      )
     ) {
       await intr.reply({
         content: "このコマンドは管理者のみが使えます",

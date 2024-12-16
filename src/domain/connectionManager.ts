@@ -1,7 +1,7 @@
 import { AudioPlayerStatus, AudioResource, createAudioPlayer, createAudioResource, entersState, VoiceConnection } from "@discordjs/voice";
-import { GuildEntity, UserEntity } from "../db";
 import { Readable } from "stream";
 import { skipStrQuery, voicevox } from "../bot";
+import { KGuild, KUser } from "@prisma/client";
 
 export default class ConnectionManager {
   private player = createAudioPlayer();
@@ -50,10 +50,11 @@ export default class ConnectionManager {
   }
 
   /** textを読み上げる */
-  async speak(text: string, guild: GuildEntity, user?: UserEntity) {
+  async speak(text: string, guild: KGuild, user: KUser) {
     // 音声合成用のクエリを生成
     const query = await voicevox.post(
-      `/audio_query?text=${encodeURIComponent(text)}&speaker=${user?.speaker ?? guild.speaker}`);
+      `/audio_query?text=${encodeURIComponent(text)}&speaker=${user?.speaker ?? guild.speaker}`
+    );
 
     let cnt = 0;
     const resultPhrases = [];
@@ -81,9 +82,11 @@ export default class ConnectionManager {
     query.data.volumeScale = 1.3;
 
     // 音声合成
-    const wav = await voicevox.post(`/synthesis?speaker=${user?.speaker ?? guild.speaker}`, query.data, {
-      responseType: "arraybuffer"
-    });
+    const wav = await voicevox.post(
+      `/synthesis?speaker=${user?.speaker ?? guild.speaker}`,
+      query.data,
+      { responseType: "arraybuffer" },
+    );
     const resource = createAudioResource(Readable.from(wav.data));
     await this.play(resource);
   }
