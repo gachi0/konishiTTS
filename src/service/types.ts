@@ -1,4 +1,4 @@
-import { ApplicationCommandBooleanOptionData, ApplicationCommandNumericOptionData, ApplicationCommandOptionData, ApplicationCommandOptionType, ApplicationCommandStringOptionData, ChatInputApplicationCommandData, ChatInputCommandInteraction, ClientEvents, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder, TextBasedChannel } from "discord.js";
+import { ChatInputApplicationCommandData, ChatInputCommandInteraction, ClientEvents, TextBasedChannel } from "discord.js";
 
 /** コマンド */
 export interface ICommand {
