@@ -1,8 +1,8 @@
 import { db, managers } from "../bot";
-import { upsertQuery } from "../domain/db";
-import { createEvent } from "../domain/util";
+import { upsertQuery } from "../service/db";
+import { createEvent } from "../service/types";
 
-createEvent("messageCreate", async msg => {
+export default createEvent("messageCreate", async msg => {
   if (msg.author.bot
     || msg.content.startsWith("!")
     || !msg.guildId

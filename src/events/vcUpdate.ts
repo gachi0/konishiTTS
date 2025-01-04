@@ -1,9 +1,9 @@
 import { GuildMember, VoiceBasedChannel } from "discord.js";
 import { client, db, managers } from "../bot";
-import { createEvent } from "../domain/util";
-import { upsertQuery } from "../domain/db";
+import { upsertQuery } from "../service/db";
+import { createEvent } from "../service/types";
 
-createEvent("voiceStateUpdate", async (before, after) => {
+export default createEvent("voiceStateUpdate", async (before, after) => {
 
   if (!after.member) return;
 

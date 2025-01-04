@@ -1,82 +1,25 @@
-// import { EmbedBuilder, SlashCommandBuilder, SlashCommandStringOption } from "discord.js";
-// import { client, config, ICommand, speakersName } from "../bot";
+import { ChatInputCommandInteraction } from "discord.js";
+import commands from ".";
+import { botDescription, commandHelpEmbed } from "../components/help";
+import { speakers } from "../bot";
 
-// // コマンドのオプション（ApplicationCommandOptionTypeに対応）
-// const optionTypes = [
-//   "サブコマンド", "サブコマンドグループ", "文字列", "整数", "真偽値",
-//   "ユーザー", "チャンネル", "ロール", "メンション可能", "数値"];
 
-// const commands = new Map<string, ICommand>();
+export const execute = async (intr: ChatInputCommandInteraction) => {
+  const option = intr.options.getString("command");
+  if (option) {
+    const cmd = commands.get(option);
+    if (!cmd) {
+      await intr.reply("存在しないコマンドです…");
+    } else {
+      await intr.reply({ embeds: [commandHelpEmbed(cmd)] });
+    }
+  }
+  else {
+    await intr.reply({
+      embeds: botDescription(
+        [...commands.values()], [...speakers.values()]
+      )
+    });
+  }
+};
 
-// export const setHelpComamands = (cmds: Map<string, ICommand>) => {
-//   (help.data as SlashCommandBuilder)
-//     .addStringOption(new SlashCommandStringOption()
-//       .setName("command")
-//       .setDescription("使い方が知りたいコマンド名")
-//       .addChoices(...[...cmds].map(c => ({ name: c[0], value: c[0] }))));
-//   [...cmds.values()].forEach(c => commands.set(c.data.name, c));
-// };
-
-// const help: ICommand = {
-//   data: new SlashCommandBuilder()
-//     .setName("help")
-//     .setDescription("botの使い方を表示します。"),
-//   execute: async intr => {
-//     const invite = `・[招待URL](${config.inviteUrl.replace("{clientId}", `${client.user?.id}`)})\n`;
-//     const option = intr.options.getString("command");
-//     if (option) {
-//       const cmd = commands.get(option);
-//       if (!cmd) {
-//         await intr.reply("存在しないコマンドです…");
-//         return;
-//       }
-//       await intr.reply({
-//         embeds: [{
-//           title: cmd.data.name,
-//           description: cmd.data.description,
-//           fields: [
-//             {
-//               name: "情報",
-//               value: `実行可能な人: ${cmd.adminOnly ? "管理人のみ" : "全員"}\n`
-//                 + `実行可能な場所: ${cmd.guildOnly ? "サーバー内のみ" : "全て"}`
-//             },
-//             {
-//               name: "オプション",
-//               value: cmd.data.options.map(o => o.toJSON()).reduce((l, r) =>
-//                 `${l}\n\n**\`${r.name}\`** ${r.required ? "[必須]" : "[省略可]"}`
-//                 + `[${optionTypes[r.type - 1]}]\n${r.description}`, "")
-//             }
-//           ]
-//         }]
-//       });
-//     }
-//     else {
-//       await intr.reply({
-//         embeds: [
-//           {
-//             title: "概要",
-//             description: "VOICEVOXの読み上げBotです。\n"
-//               + "`/join`コマンドで読み上げを開始します！",
-//             fields: [{
-//               name: "リンク",
-//               value: "・[リポジトリ](https://github.com/gachi0/konishiTTS)\n"
-//                 + "・[VOICEVOX](https://voicevox.hiroshiba.jp)\n"
-//                 + ("" === config.inviteUrl ? "" : invite),
-//             }],
-//             footer: { text: `クレジット\nVOICEVOX: ${speakersName.join(", ")}` }
-//           },
-//           {
-//             title: "コマンド一覧",
-//             fields: [...commands.values()].map(c => ({
-//               name: `/${c.data.name}`,
-//               value: c.data.description,
-//               inline: true
-//             })),
-//           }
-//         ]
-//       });
-//     }
-//   }
-// };
-
-// export default help;

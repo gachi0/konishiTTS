@@ -1,3 +1,3 @@
-import { createEvent } from "../domain/util";
+import { createEvent } from "../service/types";
 
-createEvent("error", async (e) => console.log(e));
+export default createEvent("error", async (e) => console.log(e));

@@ -1,37 +1,52 @@
-import { ICommand, managers } from "../bot";
-import { GuildMember, SlashCommandBuilder, TextChannel } from "discord.js";
+import { managers } from "../bot";
+import { GuildMember } from "discord.js";
 import { joinVoiceChannel } from "@discordjs/voice";
-import ConnectionManager from "../domain/connectionManager";
+import ConnectionManager from "../service/connectionManager";
+import { ICommand } from "../service/types";
 
-export default <ICommand>{
-  data: new SlashCommandBuilder()
-    .setName("join")
-    .setDescription("読み上げを開始します！"),
+const command: ICommand = {
+  data: {
+    name: "join",
+    description: "参加します",
+  },
   guildOnly: true,
+
   execute: async intr => {
-    if (!(intr.member instanceof GuildMember) || !intr.guild) return;
+    if (!intr.guild || !intr.guildId) return;
+    if (!(intr.member instanceof GuildMember)) return;
+
     const vc = intr.member.voice.channel;
+
     // vcに参加してない
     if (!vc) {
       await intr.reply("ボイスチャンネルに参加してください！");
       return;
     }
+
     // 入れない
     if (!vc.joinable) {
-      await intr.reply("ボイスチャンネルに参加することができません！権限や人数を確認してください！");
+      await intr.reply("ボイスチャンネルに参加することができません…権限や人数を確認してください。");
       return;
     }
+
     // チャンネルが見えない
-    if (!(intr.channel as TextChannel)?.viewable) {
-      await intr.reply("チャンネルを見る権限がないため、メッセージを読み上げることが出来ません…");
+    if (
+      !intr.channel
+      || !("viewable" in intr.channel)
+      || !intr.channel.viewable
+    ) {
+      await intr.reply("チャンネルを見えないため、メッセージを読み上げることが出来ません…");
       return;
     }
+
     const conn = joinVoiceChannel({
-      guildId: intr.guild.id,
+      guildId: intr.guildId,
       channelId: vc.id,
       adapterCreator: intr.guild.voiceAdapterCreator
     });
-    managers.set(intr.guild.id, new ConnectionManager(intr.channelId, conn));
+    managers.set(intr.guildId, new ConnectionManager(intr.channelId, conn));
     await intr.reply("参加しました！このチャンネルでのメッセージの読み上げを開始します！");
   }
 };
+
+export default command;

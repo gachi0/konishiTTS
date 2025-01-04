@@ -1,32 +1,38 @@
-import { config, client, botInit } from "./bot";
+import { commandRegistGuildId, token } from "../env";
+import { client } from "./bot";
 import commands from "./commands";
-import { createEvent } from "./domain/util";
+import { createEvent } from "./service/types";
+
 
 createEvent("ready", async client => {
-  const commandData = [...commands.values()].map(c => c.data.toJSON());
+  const commandData = [...commands.values()].map(c => c.data);
+
   if (process.argv[2] === "guild") {
-    const guild = await client.guilds.fetch(config.guildId);
+    const guild = await client.guilds.fetch(commandRegistGuildId);
     await guild.commands.set(commandData);
-    console.log(`${config.guildId}にコマンドを登録しました！`);
+    console.log(`${commandRegistGuildId}にコマンドを登録しました！`);
   }
   else if (process.argv[2] === "app") {
     await client.application.commands.set(commandData);
     console.log("コマンドを登録しました！");
   }
   else if (process.argv[2] === "clearguild") {
-    const guild = await client.guilds.fetch(config.guildId);
+    const guild = await client.guilds.fetch(commandRegistGuildId);
     await guild.commands.set([]);
-    console.log(`${config.guildId}からコマンドを削除しました！`);
+    console.log(`${commandRegistGuildId}からコマンドを削除しました！`);
   }
   else if (process.argv[2] === "clearapp") {
     await client.application.commands.set([]);
     console.log("コマンドを削除しました！（反映には数時間かかります）");
   }
-  else throw Error(`不正な引数: ${process.argv[2]}`);
+  else {
+    throw Error(`不正な引数: ${process.argv[2]}`);
+  }
+
   client.destroy();
 });
 
 (async () => {
-  await botInit();
-  await client.login(config.token);
+  await client.login(token);
 })();
+

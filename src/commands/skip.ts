@@ -1,23 +1,34 @@
-import { SlashCommandBuilder } from "discord.js";
-import { ICommand, managers } from "../bot";
+import { ApplicationCommandOptionType } from "discord.js";
+import { managers } from "../bot";
+import { ICommand } from "../service/types";
 
-export default <ICommand>{
-  data: new SlashCommandBuilder()
-    .setName("skip")
-    .addIntegerOption(o => o
-      .setName("count")
-      .setDescription("スキップするメッセージの数 (省略された場合は1つのみがスキップされます)"))
-    .setDescription("今読み上げているメッセージをスキップします。"),
+const command: ICommand = {
+  data: {
+    name: "skip",
+    description: "今読み上げているメッセージをスキップします。",
+    options: [
+      {
+        type: ApplicationCommandOptionType.Integer,
+        name: "skip",
+        description: "スキップする数",
+      }
+    ]
+  },
   guildOnly: true,
-  execute: async intr => {
+
+  async execute(intr) {
     if (!intr.guildId) return;
+    const count = intr.options.getInteger("count");
+
     const manager = managers.get(intr.guildId);
+
     if (!manager) {
       await intr.reply("ボイスチャンネルに入っていません！");
-      return;
+    } else {
+      manager.skip(count ?? 1);
+      await intr.reply("スキップしました！");
     }
-    const count = intr.options.getInteger("count");
-    manager.skip(count ?? 1);
-    await intr.reply("スキップしました！");
-  }
+  },
 };
+
+export default command;

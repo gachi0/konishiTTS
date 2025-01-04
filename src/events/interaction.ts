@@ -1,8 +1,8 @@
 import { ChatInputCommandInteraction, GuildTextBasedChannel, PermissionsBitField } from "discord.js";
-import { createEvent } from "../domain/util";
 import commands from "../commands";
+import { createEvent } from "../service/types";
 
-createEvent("interactionCreate", async intr => {
+export default createEvent("interactionCreate", async intr => {
   if (intr instanceof ChatInputCommandInteraction) {
     const cmd = commands.get(intr.commandName);
 

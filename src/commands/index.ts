@@ -1,13 +1,13 @@
-import { ICommand } from "../bot";
 // import dict from "./dict";
 // import guildSetting from "./guildSetting";
 // import help, { setHelpComamands } from "./help";
+import { ICommand } from "../service/types";
 import join from "./join";
 import leave from "./leave";
 import skip from "./skip";
 // import userSetting from "./userSetting";
 
-const commands = new Map([
+const commandAry: ICommand[] = [
   // guildSetting,
   // help,
   join,
@@ -15,7 +15,12 @@ const commands = new Map([
   skip,
   // userSetting,
   // dict,
-].map((c: ICommand) => [c.data.name, c]));
+
+];
+
+const commands = new Map(
+  commandAry.map(c => [c.data.name, c])
+);
 
 // setHelpComamands(commands);
 

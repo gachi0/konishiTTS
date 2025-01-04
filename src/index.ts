@@ -1,13 +1,18 @@
-import { spawn } from "child_process";
-import { botInit, client, config } from "./bot";
-
-
+import { token } from "../env";
+import { client, engineSetUp } from "./bot";
+import error from "./events/error";
+import interaction from "./events/interaction";
+import message from "./events/message";
+import ready from "./events/ready";
+import vcUpdate from "./events/vcUpdate";
 
 const main = async () => {
-  // 初期化処理
-  await botInit();
-  // botにログイン
-  await client.login(config.token);
+  console.log("started");
+
+  [error, interaction, message, ready, vcUpdate]
+    .map(c => c(client));
+  await engineSetUp();
+  await client.login(token);
 };
 
 main().catch(e => {
