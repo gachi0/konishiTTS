@@ -1,7 +1,7 @@
 import { AudioPlayerStatus, AudioResource, createAudioPlayer, createAudioResource, entersState, VoiceConnection } from "@discordjs/voice";
 import { Readable } from "stream";
-import { skipStrQuery, voicevox } from "../bot";
 import { KGuild, KUser } from "@prisma/client";
+import { voicevox } from "../voicevox";
 
 export default class ConnectionManager {
   private player = createAudioPlayer();
@@ -42,8 +42,7 @@ export default class ConnectionManager {
   skip(count = 1) {
     if (count < 1) {
       return;
-    }
-    if (2 <= count) {
+    } else if (2 <= count) {
       this.queue = this.queue.slice(count - 1);
     }
     this.player.stop();
@@ -51,43 +50,29 @@ export default class ConnectionManager {
 
   /** textを読み上げる */
   async speak(text: string, guild: KGuild, user: KUser) {
-    // 音声合成用のクエリを生成
-    const query = await voicevox.post(
-      `/audio_query?text=${encodeURIComponent(text)}&speaker=${user?.speaker ?? guild.speaker}`
-    );
 
-    let cnt = 0;
-    const resultPhrases = [];
-    for (const phrase of query.data.accent_phrases) {
-      const resultPhrase = { ...phrase, moras: [] };
-      for (const mora of phrase.moras) {
-        resultPhrase.moras.push(mora);
-        cnt++;
-        // モーラ数がguild.maxCharを超えていたら止める
-        if (guild.maxChar < cnt) {
-          resultPhrases.push(resultPhrase);
-          resultPhrases.push(...skipStrQuery);
-          break;
+    // 音声合成用のクエリを生成
+    const audioQuery = await voicevox.POST('/audio_query', {
+      params: {
+        query: {
+          speaker: user?.speaker ?? guild.speaker,
+          text: encodeURIComponent(text),
         }
       }
-      cnt += phrase.pause_mora ? 1 : 0;
-      if (guild.maxChar < cnt) break;
-      // 超えていなければ現在のphraseを追加する
-      resultPhrases.push(resultPhrase);
-    }
-    query.data.accent_phrases = resultPhrases;
+    });
 
-    // その他の設定を反映
-    query.data.speedScale = guild.speed;
-    query.data.volumeScale = 1.3;
+    if (!audioQuery.data) {
+      console.log(audioQuery.error);
+      return;
+    }
 
     // 音声合成
-    const wav = await voicevox.post(
-      `/synthesis?speaker=${user?.speaker ?? guild.speaker}`,
-      query.data,
-      { responseType: "arraybuffer" },
-    );
-    const resource = createAudioResource(Readable.from(wav.data));
+    const synth = await voicevox.POST(`/synthesis`, {
+      body: audioQuery.data,
+      params: { query: { speaker: 0 } }
+    });
+
+    const resource = createAudioResource(Readable.from(synth.data ?? ''));
     await this.play(resource);
   }
 
@@ -96,3 +81,4 @@ export default class ConnectionManager {
     this.chId = chId;
   }
 }
+

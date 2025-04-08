@@ -7,7 +7,7 @@ if (!process.env.token) {
 /// トークン
 export const token = process.env.token;
 
-export const commandRegistGuildId = "";
+export const commandRegistGuildId = "855821246745542696";
 
 export const inviteUrl = "https://discord.com/api/oauth2/authorize?client_id={clientId}&permissions=3146752&scope=bot%20applications.commands";
 

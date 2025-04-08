@@ -1,17 +1,18 @@
 {
   "dependencies": {
     "@discordjs/voice": "^0.18.0",
-    "@prisma/client": "^6.0.1",
-    "axios": "^1.7.9",
+    "@prisma/client": "^6.5.0",
     "dedent": "^1.5.3",
-    "discord.js": "^14.16.3",
+    "discord.js": "^14.18.0",
     "dotenv": "^16.4.7",
     "libsodium-wrappers": "^0.7.15",
-    "remeda": "^2.19.0"
+    "openapi-fetch": "^0.13.5",
+    "remeda": "^2.21.2"
   },
   "devDependencies": {
-    "prisma": "^6.0.1",
-    "typescript": "^5.7.2"
+    "openapi-typescript": "^7.6.1",
+    "prisma": "^6.5.0",
+    "typescript": "^5.8.2"
   },
   "name": "konishi-tts",
   "description": "",
@@ -21,10 +22,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npx ts-node src/index.ts",
-    "cmdguild": "npx ts-node src/deployCmds.ts guild",
-    "cmdapp": "npx ts-node src/deployCmds.ts app",
-    "clearguild": "npx ts-node src/deployCmds.ts clearguild",
-    "clearapp": "npx ts-node src/deployCmds.ts clearapp"
+    "genapi": "npx openapi-typescript http://localhost:50021/openapi.json -o ./src/openapi/schema.ts",
+    "registcmd": "npx ts-node src/deployCmds.ts"
   },
   "repository": {
     "type": "git",

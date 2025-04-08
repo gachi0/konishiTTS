@@ -1,11 +1,11 @@
 import { commandRegistGuildId, token } from "../env";
 import { client } from "./bot";
-import commands from "./commands";
+import commands, { commandAry } from "./commands";
 import { createEvent } from "./service/types";
 
 
-createEvent("ready", async client => {
-  const commandData = [...commands.values()].map(c => c.data);
+const ready = createEvent("ready", async client => {
+  const commandData = commandAry.map(c => c.data);
 
   if (process.argv[2] === "guild") {
     const guild = await client.guilds.fetch(commandRegistGuildId);
@@ -33,6 +33,7 @@ createEvent("ready", async client => {
 });
 
 (async () => {
+  ready(client);
   await client.login(token);
 })();
 

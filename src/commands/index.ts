@@ -1,19 +1,29 @@
 // import dict from "./dict";
 // import guildSetting from "./guildSetting";
-// import help, { setHelpComamands } from "./help";
+import { execute } from "./help/help";
 import { ICommand } from "../service/types";
 import join from "./join";
 import leave from "./leave";
 import skip from "./skip";
-// import userSetting from "./userSetting";
+import { ApplicationCommandType } from "discord.js";
 
-const commandAry: ICommand[] = [
+import userSetting from "./settings/user";
+
+export const commandAry: ICommand[] = [
   // guildSetting,
   // help,
   join,
   leave,
   skip,
-  // userSetting,
+  {
+    data: {
+      name: "help",
+      description: "helpelpeeepee",
+      type: ApplicationCommandType.ChatInput,
+    },
+    async execute(intr) { execute(intr); },
+  },
+  userSetting,
   // dict,
 
 ];

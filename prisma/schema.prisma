@@ -11,11 +11,10 @@ datasource db {
 }
 
 model KUser {
-  id       String  @id
-  speaker  Int     @default(0)
-  isRead   Boolean @default(true)
-  joinText String  @default("よお{name}")
-  KWord    KWord[]
+  id      String  @id
+  speaker Int     @default(0)
+  isRead  Boolean @default(true)
+  KWord   KWord[]
 }
 
 model KGuild {

@@ -1,6 +1,7 @@
-import { APIEmbed, APIEmbedField, ApplicationCommandOptionData, ApplicationCommandOptionType } from "discord.js";
-import { ICommand } from "../service/types";
+import { APIEmbed, APIEmbedField, ApplicationCommandOptionData, ApplicationCommandOptionType, hyperlink } from "discord.js";
+import { ICommand } from "../../service/types";
 import dedent from "dedent";
+import { vvInfo } from "../../voicevox";
 
 const optionTypes: Record<number, string> = {
   [ApplicationCommandOptionType.Subcommand]: "サブコマンド",
@@ -42,20 +43,17 @@ const optionsField = (
       o.type !== ApplicationCommandOptionType.SubcommandGroup
       && o.type !== ApplicationCommandOptionType.Subcommand
     )
-    .reduce((acc, o) =>
-      dedent`
-        ${acc}
-
-        **${o.name}**
-        [${o.required ? "必須" : "省略可"}]
-        [${optionTypes[o.type - 1]}]
-        ${o.description}`,
-      ""
-    ),
+    .map(o => dedent`
+      **${o.name}**
+      [${o.required ? "必須" : "省略可"}]
+      [${optionTypes[o.type - 1]}]
+      ${o.description}`,
+    )
+    .join('\n'),
 });
 
 
-export const botDescription = (cmds: ICommand[], speakers: string[]): APIEmbed[] => [
+export const botDescription = (commandAry: ICommand[]): APIEmbed[] => [
   {
     title: "概要",
     description: "VOICEVOXの読み上げBotです。"
@@ -63,23 +61,23 @@ export const botDescription = (cmds: ICommand[], speakers: string[]): APIEmbed[]
     fields: [{
       name: "リンク",
       value: dedent`
-      - [リポジトリ](https://github.com/gachi0/konishiTTS)
-      - [VOICEVOX](https://voicevox.hiroshiba.jp)`
+      - ${hyperlink('リポジトリ', 'https://github.com/gachi0/konishiTTS')}
+      - ${hyperlink('VOICEVOX', 'https://voicevox.hiroshiba.jp')}`
     }],
-    footer: { text: `クレジット\nVOICEVOX: ${speakers.join(", ")}` }
+    footer: { text: `クレジット\nVOICEVOX: ${vvInfo.speakers.join(", ")}` }
   },
   {
     title: "コマンド一覧",
-    fields: [...cmds.values()].map(c => ({
-      name: `/${c.data.name}`,
-      value: c.data.description,
+    fields: commandAry.map(({ data }) => ({
+      name: `/${data.name}`,
+      value: data.description,
       inline: true
     })),
   }
 ];
 
 
-export const genHelpCommandData = (cmds: Map<string, ICommand>) => ({
+export const helpSlashCommandData = (cmds: ICommand[]) => ({
   name: "help",
   description: "botの使い方を表示します。",
   options: [
@@ -87,8 +85,8 @@ export const genHelpCommandData = (cmds: Map<string, ICommand>) => ({
       type: ApplicationCommandOptionType.String,
       name: "command",
       description: "使い方が知りたいコマンド名",
-      choices: [...cmds].map(
-        ([name]) => ({ name, value: name })
+      choices: cmds.map(
+        ({ data }) => ({ name: data.name, value: data.description })
       )
     }
   ]

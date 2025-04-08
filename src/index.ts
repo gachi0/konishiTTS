@@ -1,17 +1,21 @@
 import { token } from "../env";
-import { client, engineSetUp } from "./bot";
+import { client } from "./bot";
 import error from "./events/error";
 import interaction from "./events/interaction";
 import message from "./events/message";
 import ready from "./events/ready";
 import vcUpdate from "./events/vcUpdate";
+import { vvInfo } from "./voicevox";
 
 const main = async () => {
-  console.log("started");
+  console.log("running...");
 
-  [error, interaction, message, ready, vcUpdate]
-    .map(c => c(client));
-  await engineSetUp();
+  [
+    error, interaction, message, ready, vcUpdate
+  ].map(c => c(client));
+
+  await vvInfo.fetches();
+
   await client.login(token);
 };
 
