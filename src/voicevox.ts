@@ -20,6 +20,7 @@ class VoiceVoxInfomator {
   }
 
   async fetches() {
+    console.log('VOICEVOX INFO FETCH...');
     const running = await this.isEngineRunning();
     if (!running) await this.runEngine();
 

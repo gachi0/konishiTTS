@@ -17,11 +17,15 @@ const optionTypes: Record<number, string> = {
 };
 
 
+// 定数ではなく、関数で生成しなければいけない理由は何か？
+// なんかたしか昔定数で生成したほうが効率いいと思ってそうしようとしたらできなかった、何故かは忘れた、なんだっけ
+
+
 export const commandHelpEmbed = (
   cmd: ICommand,
 ): APIEmbed => ({
   title: cmd.data.name,
-  description: cmd.data.description,
+  description: cmd.data.description ?? 'なし',
   fields: [
     {
       name: "情報",

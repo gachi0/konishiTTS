@@ -1,5 +1,6 @@
 import { token } from "../env";
 import { client } from "./bot";
+import { setCommands } from "./commands";
 import error from "./events/error";
 import interaction from "./events/interaction";
 import message from "./events/message";
@@ -9,12 +10,12 @@ import { vvInfo } from "./voicevox";
 
 const main = async () => {
   console.log("running...");
+  await vvInfo.fetches();
+  setCommands();
 
   [
     error, interaction, message, ready, vcUpdate
   ].map(c => c(client));
-
-  await vvInfo.fetches();
 
   await client.login(token);
 };

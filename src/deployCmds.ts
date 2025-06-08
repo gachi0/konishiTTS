@@ -1,10 +1,13 @@
 import { commandRegistGuildId, token } from "../env";
 import { client } from "./bot";
-import commands, { commandAry } from "./commands";
+import commands, { commandAry, setCommands } from "./commands";
 import { createEvent } from "./service/types";
+import { vvInfo } from "./voicevox";
 
 
 const ready = createEvent("ready", async client => {
+  await vvInfo.fetches();
+  setCommands();
   const commandData = commandAry.map(c => c.data);
 
   if (process.argv[2] === "guild") {

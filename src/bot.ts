@@ -2,8 +2,8 @@ import { Client, GatewayIntentBits, SlashCommandBuilder, SlashCommandSubcommands
 import ConnectionManager from "./service/connectionManager";
 import { PrismaClient } from "@prisma/client";
 import { enginePath, engineUrl } from "../env";
-import { operations, paths } from "./openapi/schema";
 import createClient from "openapi-fetch";
+import { ICommand } from "./service/types";
 
 export const db = new PrismaClient();
 

@@ -1,37 +1,40 @@
-// import dict from "./dict";
-// import guildSetting from "./guildSetting";
-import { execute } from "./help/help";
-import { ICommand } from "../service/types";
+
+import { ICommand, INotParsedCommand } from "../service/types";
 import join from "./join";
 import leave from "./leave";
 import skip from "./skip";
-import { ApplicationCommandType } from "discord.js";
-
+import speakers from "./speakers";
+import speaker from "./speaker";
 import userSetting from "./settings/user";
 
-export const commandAry: ICommand[] = [
-  // guildSetting,
+const beforeCmds: INotParsedCommand[] = [
   // help,
   join,
   leave,
   skip,
-  {
-    data: {
-      name: "help",
-      description: "helpelpeeepee",
-      type: ApplicationCommandType.ChatInput,
-    },
-    async execute(intr) { execute(intr); },
-  },
+  speakers,
+  speaker,
   userSetting,
-  // dict,
-
 ];
 
-const commands = new Map(
-  commandAry.map(c => [c.data.name, c])
-);
+export const commandAry: ICommand[] = [];
 
-// setHelpComamands(commands);
+const commands = new Map<string, ICommand>();
+
+/** 実行時にVVInfoとかのあとに実行させてね */
+export const setCommands = () => {
+  for (const c of beforeCmds) {
+    const data = typeof c.data === 'function'
+      ? c.data()
+      : c.data;
+
+    console.log(data);
+
+    const parsed = { ...c, data };
+
+    commandAry.push(parsed);
+    commands.set(data.name, parsed);
+  }
+};
 
 export default commands;

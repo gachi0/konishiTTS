@@ -1,9 +1,7 @@
 import { ChatInputCommandInteraction, codeBlock, GuildMember, GuildTextBasedChannel, PermissionsBitField } from "discord.js";
 import commands from "../commands";
 import { createEvent } from "../service/types";
-import dedent from "dedent";
 import { txtColumns } from "../service/util";
-
 
 const isAdmin = (m: GuildMember) => m.permissions.has("Administrator");
 
