@@ -10,7 +10,6 @@ class VoiceVoxInfomator {
   /** バージョン */
   version: string = 'fetching version';
 
-
   /** スピーカーの情報 */
   speakers: components['schemas']['Speaker'][] = [];
 
@@ -81,5 +80,5 @@ class VoiceVoxInfomator {
 /** VOICEVOXクライアント */
 export let voicevox = createClient<paths>({ baseUrl: engineUrl });
 
-/** ヴォイスヴォックス情報 */
+/** ヴォイスヴォックス情報シングルちんインスタンス */
 export const vvInfo = new VoiceVoxInfomator();

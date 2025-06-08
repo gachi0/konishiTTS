@@ -1,18 +1,18 @@
 {
   "dependencies": {
     "@discordjs/voice": "^0.18.0",
-    "@prisma/client": "^6.5.0",
-    "dedent": "^1.5.3",
-    "discord.js": "^14.18.0",
-    "dotenv": "^16.4.7",
+    "@prisma/client": "^6.9.0",
+    "dedent": "^1.6.0",
+    "discord.js": "^14.19.3",
+    "dotenv": "^16.5.0",
     "libsodium-wrappers": "^0.7.15",
-    "openapi-fetch": "^0.13.5",
-    "remeda": "^2.21.2"
+    "openapi-fetch": "^0.14.0",
+    "remeda": "^2.22.6"
   },
   "devDependencies": {
-    "openapi-typescript": "^7.6.1",
-    "prisma": "^6.5.0",
-    "typescript": "^5.8.2"
+    "openapi-typescript": "^7.8.0",
+    "prisma": "^6.9.0",
+    "typescript": "^5.8.3"
   },
   "name": "konishi-tts",
   "description": "",

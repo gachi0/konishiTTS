@@ -192,6 +192,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/sing_frame_f0": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** 楽譜・歌唱音声合成用のクエリからフレームごとの基本周波数を得る */
+        post: operations["sing_frame_f0_sing_frame_f0_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/sing_frame_volume": {
         parameters: {
             query?: never;
@@ -537,87 +554,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/downloadable_libraries": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Downloadable Libraries
-         * @description ダウンロード可能な音声ライブラリの情報を返します。
-         */
-        get: operations["downloadable_libraries_downloadable_libraries_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/installed_libraries": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Installed Libraries
-         * @description インストールした音声ライブラリの情報を返します。
-         */
-        get: operations["installed_libraries_installed_libraries_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/install_library/{library_uuid}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Install Library
-         * @description 音声ライブラリをインストールします。
-         *     音声ライブラリのZIPファイルをリクエストボディとして送信してください。
-         */
-        post: operations["install_library_install_library__library_uuid__post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/uninstall_library/{library_uuid}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Uninstall Library
-         * @description 音声ライブラリをアンインストールします。
-         */
-        post: operations["uninstall_library_uninstall_library__library_uuid__post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/user_dict": {
         parameters: {
             query?: never;
@@ -911,6 +847,11 @@ export interface components {
             /** Allow Origin */
             allow_origin?: string;
         };
+        /** Body_sing_frame_f0_sing_frame_f0_post */
+        Body_sing_frame_f0_sing_frame_f0_post: {
+            score: components["schemas"]["Score"];
+            frame_audio_query: components["schemas"]["FrameAudioQuery"];
+        };
         /** Body_sing_frame_volume_sing_frame_volume_post */
         Body_sing_frame_volume_sing_frame_volume_post: {
             score: components["schemas"]["Score"];
@@ -922,42 +863,6 @@ export interface components {
          * @enum {string}
          */
         CorsPolicyMode: "all" | "localapps";
-        /**
-         * DownloadableLibraryInfo
-         * @description ダウンロード可能な音声ライブラリの情報
-         */
-        DownloadableLibraryInfo: {
-            /**
-             * Name
-             * @description 音声ライブラリの名前
-             */
-            name: string;
-            /**
-             * Uuid
-             * @description 音声ライブラリのUUID
-             */
-            uuid: string;
-            /**
-             * Version
-             * @description 音声ライブラリのバージョン
-             */
-            version: string;
-            /**
-             * Download Url
-             * @description 音声ライブラリのダウンロードURL
-             */
-            download_url: string;
-            /**
-             * Bytes
-             * @description 音声ライブラリのバイト数
-             */
-            bytes: number;
-            /**
-             * Speakers
-             * @description 音声ライブラリに含まれるキャラクターのリスト
-             */
-            speakers: components["schemas"]["LibrarySpeaker"][];
-        };
         /**
          * EngineManifest
          * @description エンジン自体に関する情報
@@ -1087,55 +992,6 @@ export interface components {
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
-        };
-        /**
-         * InstalledLibraryInfo
-         * @description インストール済み音声ライブラリの情報
-         */
-        InstalledLibraryInfo: {
-            /**
-             * Name
-             * @description 音声ライブラリの名前
-             */
-            name: string;
-            /**
-             * Uuid
-             * @description 音声ライブラリのUUID
-             */
-            uuid: string;
-            /**
-             * Version
-             * @description 音声ライブラリのバージョン
-             */
-            version: string;
-            /**
-             * Download Url
-             * @description 音声ライブラリのダウンロードURL
-             */
-            download_url: string;
-            /**
-             * Bytes
-             * @description 音声ライブラリのバイト数
-             */
-            bytes: number;
-            /**
-             * Speakers
-             * @description 音声ライブラリに含まれるキャラクターのリスト
-             */
-            speakers: components["schemas"]["LibrarySpeaker"][];
-            /**
-             * Uninstallable
-             * @description アンインストール可能かどうか
-             */
-            uninstallable: boolean;
-        };
-        /**
-         * LibrarySpeaker
-         * @description 音声ライブラリに含まれるキャラクターの情報
-         */
-        LibrarySpeaker: {
-            speaker: components["schemas"]["Speaker"];
-            speaker_info: components["schemas"]["SpeakerInfo"];
         };
         /**
          * LicenseInfo
@@ -1657,83 +1513,6 @@ export interface components {
          * @enum {string}
          */
         WordTypes: "PROPER_NOUN" | "COMMON_NOUN" | "VERB" | "ADJECTIVE" | "SUFFIX";
-        /**
-         * BaseLibraryInfo
-         * @description 音声ライブラリの情報
-         */
-        BaseLibraryInfo: {
-            /**
-             * Name
-             * @description 音声ライブラリの名前
-             */
-            name: string;
-            /**
-             * Uuid
-             * @description 音声ライブラリのUUID
-             */
-            uuid: string;
-            /**
-             * Version
-             * @description 音声ライブラリのバージョン
-             */
-            version: string;
-            /**
-             * Download Url
-             * @description 音声ライブラリのダウンロードURL
-             */
-            download_url: string;
-            /**
-             * Bytes
-             * @description 音声ライブラリのバイト数
-             */
-            bytes: number;
-            /**
-             * Speakers
-             * @description 音声ライブラリに含まれるキャラクターのリスト
-             */
-            speakers: components["schemas"]["LibrarySpeaker"][];
-        };
-        /**
-         * VvlibManifest
-         * @description vvlib(VOICEVOX Library)に関する情報
-         */
-        VvlibManifest: {
-            /**
-             * Manifest Version
-             * @description マニフェストバージョン
-             */
-            manifest_version: string;
-            /**
-             * Name
-             * @description 音声ライブラリ名
-             */
-            name: string;
-            /**
-             * Version
-             * @description 音声ライブラリバージョン
-             */
-            version: string;
-            /**
-             * Uuid
-             * @description 音声ライブラリのUUID
-             */
-            uuid: string;
-            /**
-             * Brand Name
-             * @description エンジンのブランド名
-             */
-            brand_name: string;
-            /**
-             * Engine Name
-             * @description エンジン名
-             */
-            engine_name: string;
-            /**
-             * Engine Uuid
-             * @description エンジンのUUID
-             */
-            engine_uuid: string;
-        };
     };
     responses: never;
     parameters: never;
@@ -2093,6 +1872,42 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["FrameAudioQuery"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    sing_frame_f0_sing_frame_f0_post: {
+        parameters: {
+            query: {
+                speaker: number;
+                core_version?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Body_sing_frame_f0_sing_frame_f0_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": number[];
                 };
             };
             /** @description Validation Error */
@@ -2654,108 +2469,6 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["SpeakerInfo"];
                 };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    downloadable_libraries_downloadable_libraries_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description ダウンロード可能な音声ライブラリの情報リスト */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DownloadableLibraryInfo"][];
-                };
-            };
-        };
-    };
-    installed_libraries_installed_libraries_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description インストールした音声ライブラリの情報 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        [key: string]: components["schemas"]["InstalledLibraryInfo"];
-                    };
-                };
-            };
-        };
-    };
-    install_library_install_library__library_uuid__post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description 音声ライブラリのID */
-                library_uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    uninstall_library_uninstall_library__library_uuid__post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description 音声ライブラリのID */
-                library_uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
             };
             /** @description Validation Error */
             422: {

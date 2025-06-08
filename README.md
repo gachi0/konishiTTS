@@ -28,3 +28,7 @@ npm start
 ## リンク
 - [VOICEVOX](https://voicevox.hiroshiba.jp)
 - [node.js](https://nodejs.org/ja/)
+
+# memo
+型定義生成 ヴォイヴォ鯖起動状態で
+`npx openapi-typescript http://localhost:50021/openapi.json --output ./src/openapi/schema.ts`

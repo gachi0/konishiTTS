@@ -51,13 +51,12 @@ export default class ConnectionManager {
   /** textを読み上げる */
   async speak(text: string, guild: KGuild, user: KUser) {
 
+    const speaker = user?.speaker ?? guild.speaker;
+
     // 音声合成用のクエリを生成
     const audioQuery = await voicevox.POST('/audio_query', {
       params: {
-        query: {
-          speaker: user?.speaker ?? guild.speaker,
-          text: encodeURIComponent(text),
-        }
+        query: { speaker, text }
       }
     });
 
@@ -69,10 +68,16 @@ export default class ConnectionManager {
     // 音声合成
     const synth = await voicevox.POST(`/synthesis`, {
       body: audioQuery.data,
-      params: { query: { speaker: 0 } }
+      params: { query: { speaker } },
+      parseAs: "arrayBuffer",
     });
 
-    const resource = createAudioResource(Readable.from(synth.data ?? ''));
+    if (!synth.data) return;
+
+    const buffer = Buffer.from(synth.data);
+    const readable = Readable.from([buffer]);
+    const resource = createAudioResource(readable);
+
     await this.play(resource);
   }
 
