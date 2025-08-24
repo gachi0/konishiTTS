@@ -17,7 +17,7 @@ export interface paths {
          * 音声合成用のクエリを作成する
          * @description 音声合成用のクエリの初期値を得ます。ここで得られたクエリはそのまま音声合成に利用できます。各値の意味は`Schemas`を参照してください。
          */
-        post: operations["audio_query_audio_query_post"];
+        post: operations["audio_query"];
         delete?: never;
         options?: never;
         head?: never;
@@ -37,7 +37,7 @@ export interface paths {
          * 音声合成用のクエリをプリセットを用いて作成する
          * @description 音声合成用のクエリの初期値を得ます。ここで得られたクエリはそのまま音声合成に利用できます。各値の意味は`Schemas`を参照してください。
          */
-        post: operations["audio_query_from_preset_audio_query_from_preset_post"];
+        post: operations["audio_query_from_preset"];
         delete?: never;
         options?: never;
         head?: never;
@@ -56,14 +56,17 @@ export interface paths {
         /**
          * テキストからアクセント句を得る
          * @description テキストからアクセント句を得ます。
+         *
          *     is_kanaが`true`のとき、テキストは次のAquesTalk 風記法で解釈されます。デフォルトは`false`です。
          *     * 全てのカナはカタカナで記述される
          *     * アクセント句は`/`または`、`で区切る。`、`で区切った場合に限り無音区間が挿入される。
          *     * カナの手前に`_`を入れるとそのカナは無声化される
          *     * アクセント位置を`'`で指定する。全てのアクセント句にはアクセント位置を1つ指定する必要がある。
          *     * アクセント句末に`？`(全角)を入れることにより疑問文の発音ができる。
+         *     enable_katakana_englishが`true`のとき、テキスト中の読みが不明な英単語をカタカナ読みにします。デフォルトは`true`です。
+         *     is_kanaが`true`のとき、enable_katakana_englishの値は無視されます。
          */
-        post: operations["accent_phrases_accent_phrases_post"];
+        post: operations["accent_phrases"];
         delete?: never;
         options?: never;
         head?: never;
@@ -79,8 +82,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** アクセント句から音高・音素長を得る */
-        post: operations["mora_data_mora_data_post"];
+        /** アクセント句から音素の長さと音高を得る */
+        post: operations["mora_data"];
         delete?: never;
         options?: never;
         head?: never;
@@ -96,8 +99,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** アクセント句から音素長を得る */
-        post: operations["mora_length_mora_length_post"];
+        /** アクセント句から音素の長さを得る */
+        post: operations["mora_length"];
         delete?: never;
         options?: never;
         head?: never;
@@ -114,7 +117,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** アクセント句から音高を得る */
-        post: operations["mora_pitch_mora_pitch_post"];
+        post: operations["mora_pitch"];
         delete?: never;
         options?: never;
         head?: never;
@@ -131,7 +134,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** 音声合成する */
-        post: operations["synthesis_synthesis_post"];
+        post: operations["synthesis"];
         delete?: never;
         options?: never;
         head?: never;
@@ -148,7 +151,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** 音声合成する（キャンセル可能） */
-        post: operations["cancellable_synthesis_cancellable_synthesis_post"];
+        post: operations["cancellable_synthesis"];
         delete?: never;
         options?: never;
         head?: never;
@@ -165,7 +168,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** 複数まとめて音声合成する */
-        post: operations["multi_synthesis_multi_synthesis_post"];
+        post: operations["multi_synthesis"];
         delete?: never;
         options?: never;
         head?: never;
@@ -185,7 +188,7 @@ export interface paths {
          * 歌唱音声合成用のクエリを作成する
          * @description 歌唱音声合成用のクエリの初期値を得ます。ここで得られたクエリはそのまま歌唱音声合成に利用できます。各値の意味は`Schemas`を参照してください。
          */
-        post: operations["sing_frame_audio_query_sing_frame_audio_query_post"];
+        post: operations["sing_frame_audio_query"];
         delete?: never;
         options?: never;
         head?: never;
@@ -202,7 +205,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** 楽譜・歌唱音声合成用のクエリからフレームごとの基本周波数を得る */
-        post: operations["sing_frame_f0_sing_frame_f0_post"];
+        post: operations["sing_frame_f0"];
         delete?: never;
         options?: never;
         head?: never;
@@ -219,7 +222,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** 楽譜・歌唱音声合成用のクエリからフレームごとの音量を得る */
-        post: operations["sing_frame_volume_sing_frame_volume_post"];
+        post: operations["sing_frame_volume"];
         delete?: never;
         options?: never;
         head?: never;
@@ -239,7 +242,7 @@ export interface paths {
          * Frame Synthesis
          * @description 歌唱音声合成を行います。
          */
-        post: operations["frame_synthesis_frame_synthesis_post"];
+        post: operations["frame_synthesis"];
         delete?: never;
         options?: never;
         head?: never;
@@ -259,7 +262,7 @@ export interface paths {
          * base64エンコードされた複数のwavデータを一つに結合する
          * @description base64エンコードされたwavデータを一纏めにし、wavファイルで返します。
          */
-        post: operations["connect_waves_connect_waves_post"];
+        post: operations["connect_waves"];
         delete?: never;
         options?: never;
         head?: never;
@@ -278,9 +281,10 @@ export interface paths {
         /**
          * テキストがAquesTalk 風記法に従っているか判定する
          * @description テキストがAquesTalk 風記法に従っているかどうかを判定します。
+         *
          *     従っていない場合はエラーが返ります。
          */
-        post: operations["validate_kana_validate_kana_post"];
+        post: operations["validate_kana"];
         delete?: never;
         options?: never;
         head?: never;
@@ -299,9 +303,10 @@ export interface paths {
         /**
          * Initialize Speaker
          * @description 指定されたスタイルを初期化します。
+         *
          *     実行しなくても他のAPIは使用できますが、初回実行時に時間がかかることがあります。
          */
-        post: operations["initialize_speaker_initialize_speaker_post"];
+        post: operations["initialize_speaker"];
         delete?: never;
         options?: never;
         head?: never;
@@ -319,7 +324,7 @@ export interface paths {
          * Is Initialized Speaker
          * @description 指定されたスタイルが初期化されているかどうかを返します。
          */
-        get: operations["is_initialized_speaker_is_initialized_speaker_get"];
+        get: operations["is_initialized_speaker"];
         put?: never;
         post?: never;
         delete?: never;
@@ -339,7 +344,7 @@ export interface paths {
          * Supported Devices
          * @description 対応デバイスの一覧を取得します。
          */
-        get: operations["supported_devices_supported_devices_get"];
+        get: operations["supported_devices"];
         put?: never;
         post?: never;
         delete?: never;
@@ -360,11 +365,12 @@ export interface paths {
         /**
          * 指定したスタイルに対してエンジン内のキャラクターがモーフィングが可能か判定する
          * @description 指定されたベーススタイルに対してエンジン内の各キャラクターがモーフィング機能を利用可能か返します。
+         *
          *     モーフィングの許可/禁止は`/speakers`の`speaker.supported_features.synthesis_morphing`に記載されています。
          *     プロパティが存在しない場合は、モーフィングが許可されているとみなします。
          *     返り値のスタイルIDはstring型なので注意。
          */
-        post: operations["morphable_targets_morphable_targets_post"];
+        post: operations["morphable_targets"];
         delete?: never;
         options?: never;
         head?: never;
@@ -383,9 +389,10 @@ export interface paths {
         /**
          * 2種類のスタイルでモーフィングした音声を合成する
          * @description 指定された2種類のスタイルで音声を合成、指定した割合でモーフィングした音声を得ます。
+         *
          *     モーフィングの割合は`morph_rate`で指定でき、0.0でベースのスタイル、1.0でターゲットのスタイルに近づきます。
          */
-        post: operations["_synthesis_morphing_synthesis_morphing_post"];
+        post: operations["_synthesis_morphing"];
         delete?: never;
         options?: never;
         head?: never;
@@ -401,9 +408,9 @@ export interface paths {
         };
         /**
          * Get Presets
-         * @description エンジンが保持しているプリセットの設定を返します
+         * @description エンジンが保持しているプリセットの設定を返します。
          */
-        get: operations["get_presets_presets_get"];
+        get: operations["get_presets"];
         put?: never;
         post?: never;
         delete?: never;
@@ -423,9 +430,9 @@ export interface paths {
         put?: never;
         /**
          * Add Preset
-         * @description 新しいプリセットを追加します
+         * @description 新しいプリセットを追加します。
          */
-        post: operations["add_preset_add_preset_post"];
+        post: operations["add_preset"];
         delete?: never;
         options?: never;
         head?: never;
@@ -443,9 +450,9 @@ export interface paths {
         put?: never;
         /**
          * Update Preset
-         * @description 既存のプリセットを更新します
+         * @description 既存のプリセットを更新します。
          */
-        post: operations["update_preset_update_preset_post"];
+        post: operations["update_preset"];
         delete?: never;
         options?: never;
         head?: never;
@@ -463,9 +470,9 @@ export interface paths {
         put?: never;
         /**
          * Delete Preset
-         * @description 既存のプリセットを削除します
+         * @description 既存のプリセットを削除します。
          */
-        post: operations["delete_preset_delete_preset_post"];
+        post: operations["delete_preset"];
         delete?: never;
         options?: never;
         head?: never;
@@ -483,7 +490,7 @@ export interface paths {
          * Speakers
          * @description 喋れるキャラクターの情報の一覧を返します。
          */
-        get: operations["speakers_speakers_get"];
+        get: operations["speakers"];
         put?: never;
         post?: never;
         delete?: never;
@@ -502,9 +509,10 @@ export interface paths {
         /**
          * Speaker Info
          * @description UUID で指定された喋れるキャラクターの情報を返します。
+         *
          *     画像や音声はresource_formatで指定した形式で返されます。
          */
-        get: operations["speaker_info_speaker_info_get"];
+        get: operations["speaker_info"];
         put?: never;
         post?: never;
         delete?: never;
@@ -524,7 +532,7 @@ export interface paths {
          * Singers
          * @description 歌えるキャラクターの情報の一覧を返します。
          */
-        get: operations["singers_singers_get"];
+        get: operations["singers"];
         put?: never;
         post?: never;
         delete?: never;
@@ -543,9 +551,10 @@ export interface paths {
         /**
          * Singer Info
          * @description UUID で指定された歌えるキャラクターの情報を返します。
+         *
          *     画像や音声はresource_formatで指定した形式で返されます。
          */
-        get: operations["singer_info_singer_info_get"];
+        get: operations["singer_info"];
         put?: never;
         post?: never;
         delete?: never;
@@ -564,9 +573,10 @@ export interface paths {
         /**
          * Get User Dict Words
          * @description ユーザー辞書に登録されている単語の一覧を返します。
+         *
          *     単語の表層形(surface)は正規化済みの物を返します。
          */
-        get: operations["get_user_dict_words_user_dict_get"];
+        get: operations["get_user_dict_words"];
         put?: never;
         post?: never;
         delete?: never;
@@ -588,7 +598,7 @@ export interface paths {
          * Add User Dict Word
          * @description ユーザー辞書に言葉を追加します。
          */
-        post: operations["add_user_dict_word_user_dict_word_post"];
+        post: operations["add_user_dict_word"];
         delete?: never;
         options?: never;
         head?: never;
@@ -607,13 +617,13 @@ export interface paths {
          * Rewrite User Dict Word
          * @description ユーザー辞書に登録されている言葉を更新します。
          */
-        put: operations["rewrite_user_dict_word_user_dict_word__word_uuid__put"];
+        put: operations["rewrite_user_dict_word"];
         post?: never;
         /**
          * Delete User Dict Word
          * @description ユーザー辞書に登録されている言葉を削除します。
          */
-        delete: operations["delete_user_dict_word_user_dict_word__word_uuid__delete"];
+        delete: operations["delete_user_dict_word"];
         options?: never;
         head?: never;
         patch?: never;
@@ -632,7 +642,7 @@ export interface paths {
          * Import User Dict Words
          * @description 他のユーザー辞書をインポートします。
          */
-        post: operations["import_user_dict_words_import_user_dict_post"];
+        post: operations["import_user_dict_words"];
         delete?: never;
         options?: never;
         head?: never;
@@ -650,7 +660,7 @@ export interface paths {
          * Version
          * @description エンジンのバージョンを取得します。
          */
-        get: operations["version_version_get"];
+        get: operations["version"];
         put?: never;
         post?: never;
         delete?: never;
@@ -670,7 +680,7 @@ export interface paths {
          * Core Versions
          * @description 利用可能なコアのバージョン一覧を取得します。
          */
-        get: operations["core_versions_core_versions_get"];
+        get: operations["core_versions"];
         put?: never;
         post?: never;
         delete?: never;
@@ -690,7 +700,7 @@ export interface paths {
          * Engine Manifest
          * @description エンジンマニフェストを取得します。
          */
-        get: operations["engine_manifest_engine_manifest_get"];
+        get: operations["engine_manifest"];
         put?: never;
         post?: never;
         delete?: never;
@@ -710,13 +720,13 @@ export interface paths {
          * Setting Get
          * @description 設定ページを返します。
          */
-        get: operations["setting_get_setting_get"];
+        get: operations["setting_get"];
         put?: never;
         /**
          * Setting Post
          * @description 設定を更新します。
          */
-        post: operations["setting_post_setting_post"];
+        post: operations["setting_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -734,7 +744,7 @@ export interface paths {
          * Get Portal Page
          * @description ポータルページを返します。
          */
-        get: operations["get_portal_page__get"];
+        get: operations["get_portal_page"];
         put?: never;
         post?: never;
         delete?: never;
@@ -749,7 +759,7 @@ export interface components {
     schemas: {
         /**
          * AccentPhrase
-         * @description アクセント句ごとの情報
+         * @description アクセント句ごとの情報。
          */
         AccentPhrase: {
             /**
@@ -776,7 +786,7 @@ export interface components {
         };
         /**
          * AudioQuery
-         * @description 音声合成用のクエリ
+         * @description 音声合成用のクエリ。
          */
         AudioQuery: {
             /**
@@ -859,13 +869,13 @@ export interface components {
         };
         /**
          * CorsPolicyMode
-         * @description CORSの許可モード
+         * @description CORSの許可モード。
          * @enum {string}
          */
         CorsPolicyMode: "all" | "localapps";
         /**
          * EngineManifest
-         * @description エンジン自体に関する情報
+         * @description エンジン自体に関する情報。
          */
         EngineManifest: {
             /**
@@ -933,7 +943,7 @@ export interface components {
         };
         /**
          * FrameAudioQuery
-         * @description フレームごとの音声合成用のクエリ
+         * @description フレームごとの音声合成用のクエリ。
          */
         FrameAudioQuery: {
             /**
@@ -969,7 +979,7 @@ export interface components {
         };
         /**
          * FramePhoneme
-         * @description 音素の情報
+         * @description 音素の情報。
          */
         FramePhoneme: {
             /**
@@ -995,7 +1005,7 @@ export interface components {
         };
         /**
          * LicenseInfo
-         * @description 依存ライブラリのライセンス情報
+         * @description 依存ライブラリのライセンス情報。
          */
         LicenseInfo: {
             /**
@@ -1021,7 +1031,7 @@ export interface components {
         };
         /**
          * Mora
-         * @description モーラ（子音＋母音）ごとの情報
+         * @description モーラ（子音＋母音）ごとの情報。
          */
         Mora: {
             /**
@@ -1036,7 +1046,7 @@ export interface components {
             consonant?: string;
             /**
              * Consonant Length
-             * @description 子音の音長
+             * @description 子音の長さ
              */
             consonant_length?: number;
             /**
@@ -1046,7 +1056,7 @@ export interface components {
             vowel: string;
             /**
              * Vowel Length
-             * @description 母音の音長
+             * @description 母音の長さ
              */
             vowel_length: number;
             /**
@@ -1055,7 +1065,10 @@ export interface components {
              */
             pitch: number;
         };
-        /** MorphableTargetInfo */
+        /**
+         * MorphableTargetInfo
+         * @description モーフィング相手としての情報。
+         */
         MorphableTargetInfo: {
             /**
              * Is Morphable
@@ -1065,7 +1078,7 @@ export interface components {
         };
         /**
          * Note
-         * @description 音符ごとの情報
+         * @description 音符ごとの情報。
          */
         Note: {
             /**
@@ -1089,7 +1102,10 @@ export interface components {
              */
             lyric: string;
         };
-        /** ParseKanaBadRequest */
+        /**
+         * ParseKanaBadRequest
+         * @description 読み仮名のパースに失敗した。
+         */
         ParseKanaBadRequest: {
             /**
              * Text
@@ -1121,7 +1137,7 @@ export interface components {
         };
         /**
          * Preset
-         * @description プリセット情報
+         * @description プリセット情報。
          */
         Preset: {
             /**
@@ -1188,7 +1204,7 @@ export interface components {
         };
         /**
          * Score
-         * @description 楽譜情報
+         * @description 楽譜情報。
          */
         Score: {
             /**
@@ -1310,7 +1326,7 @@ export interface components {
         };
         /**
          * SupportedDevicesInfo
-         * @description 対応しているデバイスの情報
+         * @description 対応しているデバイスの情報。
          */
         SupportedDevicesInfo: {
             /**
@@ -1331,7 +1347,7 @@ export interface components {
         };
         /**
          * SupportedFeatures
-         * @description エンジンが持つ機能の一覧
+         * @description エンジンが持つ機能の一覧。
          */
         SupportedFeatures: {
             /**
@@ -1394,10 +1410,15 @@ export interface components {
              * @description キャラクター情報のリソースをURLで返送
              */
             return_resource_url?: boolean;
+            /**
+             * Apply Katakana English
+             * @description 未知の英単語をカタカナ読みに変換
+             */
+            apply_katakana_english?: boolean;
         };
         /**
          * UpdateInfo
-         * @description エンジンのアップデート情報
+         * @description エンジンのアップデート情報。
          */
         UpdateInfo: {
             /**
@@ -1418,7 +1439,7 @@ export interface components {
         };
         /**
          * UserDictWord
-         * @description 辞書のコンパイルに使われる情報
+         * @description 辞書のコンパイルに使われる情報。
          */
         UserDictWord: {
             /**
@@ -1522,11 +1543,12 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    audio_query_audio_query_post: {
+    audio_query: {
         parameters: {
             query: {
                 text: string;
                 speaker: number;
+                enable_katakana_english?: boolean;
                 core_version?: string;
             };
             header?: never;
@@ -1555,11 +1577,12 @@ export interface operations {
             };
         };
     };
-    audio_query_from_preset_audio_query_from_preset_post: {
+    audio_query_from_preset: {
         parameters: {
             query: {
                 text: string;
                 preset_id: number;
+                enable_katakana_english?: boolean;
                 core_version?: string;
             };
             header?: never;
@@ -1588,12 +1611,13 @@ export interface operations {
             };
         };
     };
-    accent_phrases_accent_phrases_post: {
+    accent_phrases: {
         parameters: {
             query: {
                 text: string;
                 speaker: number;
                 is_kana?: boolean;
+                enable_katakana_english?: boolean;
                 core_version?: string;
             };
             header?: never;
@@ -1631,7 +1655,7 @@ export interface operations {
             };
         };
     };
-    mora_data_mora_data_post: {
+    mora_data: {
         parameters: {
             query: {
                 speaker: number;
@@ -1667,7 +1691,7 @@ export interface operations {
             };
         };
     };
-    mora_length_mora_length_post: {
+    mora_length: {
         parameters: {
             query: {
                 speaker: number;
@@ -1703,7 +1727,7 @@ export interface operations {
             };
         };
     };
-    mora_pitch_mora_pitch_post: {
+    mora_pitch: {
         parameters: {
             query: {
                 speaker: number;
@@ -1739,7 +1763,7 @@ export interface operations {
             };
         };
     };
-    synthesis_synthesis_post: {
+    synthesis: {
         parameters: {
             query: {
                 speaker: number;
@@ -1777,10 +1801,11 @@ export interface operations {
             };
         };
     };
-    cancellable_synthesis_cancellable_synthesis_post: {
+    cancellable_synthesis: {
         parameters: {
             query: {
                 speaker: number;
+                enable_interrogative_upspeak?: boolean;
                 core_version?: string;
             };
             header?: never;
@@ -1813,10 +1838,12 @@ export interface operations {
             };
         };
     };
-    multi_synthesis_multi_synthesis_post: {
+    multi_synthesis: {
         parameters: {
             query: {
                 speaker: number;
+                /** @description 疑問系のテキストが与えられたら語尾を自動調整する */
+                enable_interrogative_upspeak?: boolean;
                 core_version?: string;
             };
             header?: never;
@@ -1849,7 +1876,7 @@ export interface operations {
             };
         };
     };
-    sing_frame_audio_query_sing_frame_audio_query_post: {
+    sing_frame_audio_query: {
         parameters: {
             query: {
                 speaker: number;
@@ -1885,7 +1912,7 @@ export interface operations {
             };
         };
     };
-    sing_frame_f0_sing_frame_f0_post: {
+    sing_frame_f0: {
         parameters: {
             query: {
                 speaker: number;
@@ -1921,7 +1948,7 @@ export interface operations {
             };
         };
     };
-    sing_frame_volume_sing_frame_volume_post: {
+    sing_frame_volume: {
         parameters: {
             query: {
                 speaker: number;
@@ -1957,7 +1984,7 @@ export interface operations {
             };
         };
     };
-    frame_synthesis_frame_synthesis_post: {
+    frame_synthesis: {
         parameters: {
             query: {
                 speaker: number;
@@ -1993,7 +2020,7 @@ export interface operations {
             };
         };
     };
-    connect_waves_connect_waves_post: {
+    connect_waves: {
         parameters: {
             query?: never;
             header?: never;
@@ -2026,7 +2053,7 @@ export interface operations {
             };
         };
     };
-    validate_kana_validate_kana_post: {
+    validate_kana: {
         parameters: {
             query: {
                 /** @description 判定する対象の文字列 */
@@ -2067,7 +2094,7 @@ export interface operations {
             };
         };
     };
-    initialize_speaker_initialize_speaker_post: {
+    initialize_speaker: {
         parameters: {
             query: {
                 speaker: number;
@@ -2099,7 +2126,7 @@ export interface operations {
             };
         };
     };
-    is_initialized_speaker_is_initialized_speaker_get: {
+    is_initialized_speaker: {
         parameters: {
             query: {
                 speaker: number;
@@ -2131,7 +2158,7 @@ export interface operations {
             };
         };
     };
-    supported_devices_supported_devices_get: {
+    supported_devices: {
         parameters: {
             query?: {
                 core_version?: string;
@@ -2162,7 +2189,7 @@ export interface operations {
             };
         };
     };
-    morphable_targets_morphable_targets_post: {
+    morphable_targets: {
         parameters: {
             query?: {
                 core_version?: string;
@@ -2199,12 +2226,14 @@ export interface operations {
             };
         };
     };
-    _synthesis_morphing_synthesis_morphing_post: {
+    _synthesis_morphing: {
         parameters: {
             query: {
                 base_speaker: number;
                 target_speaker: number;
                 morph_rate: number;
+                /** @description 疑問系のテキストが与えられたら語尾を自動調整する */
+                enable_interrogative_upspeak?: boolean;
                 core_version?: string;
             };
             header?: never;
@@ -2237,7 +2266,7 @@ export interface operations {
             };
         };
     };
-    get_presets_presets_get: {
+    get_presets: {
         parameters: {
             query?: never;
             header?: never;
@@ -2257,7 +2286,7 @@ export interface operations {
             };
         };
     };
-    add_preset_add_preset_post: {
+    add_preset: {
         parameters: {
             query?: never;
             header?: never;
@@ -2290,7 +2319,7 @@ export interface operations {
             };
         };
     };
-    update_preset_update_preset_post: {
+    update_preset: {
         parameters: {
             query?: never;
             header?: never;
@@ -2323,7 +2352,7 @@ export interface operations {
             };
         };
     };
-    delete_preset_delete_preset_post: {
+    delete_preset: {
         parameters: {
             query: {
                 /** @description 削除するプリセットのプリセットID */
@@ -2353,7 +2382,7 @@ export interface operations {
             };
         };
     };
-    speakers_speakers_get: {
+    speakers: {
         parameters: {
             query?: {
                 core_version?: string;
@@ -2384,7 +2413,7 @@ export interface operations {
             };
         };
     };
-    speaker_info_speaker_info_get: {
+    speaker_info: {
         parameters: {
             query: {
                 speaker_uuid: string;
@@ -2417,7 +2446,7 @@ export interface operations {
             };
         };
     };
-    singers_singers_get: {
+    singers: {
         parameters: {
             query?: {
                 core_version?: string;
@@ -2448,7 +2477,7 @@ export interface operations {
             };
         };
     };
-    singer_info_singer_info_get: {
+    singer_info: {
         parameters: {
             query: {
                 speaker_uuid: string;
@@ -2481,7 +2510,7 @@ export interface operations {
             };
         };
     };
-    get_user_dict_words_user_dict_get: {
+    get_user_dict_words: {
         parameters: {
             query?: never;
             header?: never;
@@ -2503,7 +2532,7 @@ export interface operations {
             };
         };
     };
-    add_user_dict_word_user_dict_word_post: {
+    add_user_dict_word: {
         parameters: {
             query: {
                 /** @description 言葉の表層形 */
@@ -2543,7 +2572,7 @@ export interface operations {
             };
         };
     };
-    rewrite_user_dict_word_user_dict_word__word_uuid__put: {
+    rewrite_user_dict_word: {
         parameters: {
             query: {
                 /** @description 言葉の表層形 */
@@ -2584,7 +2613,7 @@ export interface operations {
             };
         };
     };
-    delete_user_dict_word_user_dict_word__word_uuid__delete: {
+    delete_user_dict_word: {
         parameters: {
             query?: never;
             header?: never;
@@ -2614,7 +2643,7 @@ export interface operations {
             };
         };
     };
-    import_user_dict_words_import_user_dict_post: {
+    import_user_dict_words: {
         parameters: {
             query: {
                 /** @description 重複したエントリがあった場合、上書きするかどうか */
@@ -2650,7 +2679,7 @@ export interface operations {
             };
         };
     };
-    version_version_get: {
+    version: {
         parameters: {
             query?: never;
             header?: never;
@@ -2670,7 +2699,7 @@ export interface operations {
             };
         };
     };
-    core_versions_core_versions_get: {
+    core_versions: {
         parameters: {
             query?: never;
             header?: never;
@@ -2690,7 +2719,7 @@ export interface operations {
             };
         };
     };
-    engine_manifest_engine_manifest_get: {
+    engine_manifest: {
         parameters: {
             query?: never;
             header?: never;
@@ -2710,7 +2739,7 @@ export interface operations {
             };
         };
     };
-    setting_get_setting_get: {
+    setting_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -2728,7 +2757,7 @@ export interface operations {
             };
         };
     };
-    setting_post_setting_post: {
+    setting_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -2759,7 +2788,7 @@ export interface operations {
             };
         };
     };
-    get_portal_page__get: {
+    get_portal_page: {
         parameters: {
             query?: never;
             header?: never;

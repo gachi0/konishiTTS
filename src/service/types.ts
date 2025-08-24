@@ -8,8 +8,8 @@ export interface ICommand {
   execute(intr: ChatInputCommandInteraction, ch?: TextBasedChannel): Promise<void>;
 }
 
-// ICommandから'data'プロパティを除外し、新しい'data'の型定義と結合する
-export type INotParsedCommand = Omit<ICommand, 'data'> & {
+// 未処理コマンドデータ
+export type IRawCommand = Omit<ICommand, 'data'> & {
   data:
   | ChatInputApplicationCommandData
   | (() => ChatInputApplicationCommandData);
@@ -19,4 +19,4 @@ export type INotParsedCommand = Omit<ICommand, 'data'> & {
 export const createEvent = <K extends keyof ClientEvents>(
   name: K,
   listener: (...args: ClientEvents[K]) => Promise<void>,
-) => (c: Client) => c.on(name, listener);
+) => ({ name, listener });

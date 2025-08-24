@@ -1,4 +1,4 @@
-import { db, managers } from "../bot";
+import { db, managers } from "../lib/bot";
 import { upsertQuery } from "../service/db";
 import { createEvent } from "../service/types";
 
@@ -25,7 +25,8 @@ export default createEvent("messageCreate", async msg => {
   text += msg.content;
 
   // いろいろ読み上げないようにする
-  text = text.replace(/https?:\/\S*/g, "url")
+  text = text
+    .replace(/https?:\/\S*/g, "url")
     .replace(/<(@[!&]?|#)\d+>/g, "メンション")
     .replace(/(?<=<a?:\w+):\d+>|<a?:(?=\w+:\d+>)/g, "") // 絵文字名は残し絵文字idを消す
     .replace(/[wWｗＷ]{3,}/g, ""); // ｗｗｗｗｗはわらに置換

@@ -112,3 +112,5 @@ config.toml
 *.sqlite3
 *.db
 *.db-journal
+GEMINI.md
+CLAUDE.md

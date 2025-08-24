@@ -1,8 +1,7 @@
 import { KUser } from "@prisma/client";
-import { ActionRowData, APIEmbed, codeBlock, ComponentType, inlineCode, InteractionResponse, MessageActionRowComponentData } from "discord.js";
-import { vvInfo } from "../../voicevox";
+import { ActionRowData, APIEmbed, ComponentType, inlineCode, InteractionResponse, MessageActionRowComponentData } from "discord.js";
+import { vvInfo } from "../../lib/voicevox";
 import { createSettingOption } from "./types";
-import dedent from "dedent";
 
 const cso = createSettingOption<KUser>();
 
@@ -30,12 +29,11 @@ export const USER_SETTING_COMPONENT: ActionRowData<MessageActionRowComponentData
       disabled: true,
       customId: USER_SETTING_SELECT_ACTION_ID,
       options: USER_SETTING_INFO.map(o => ({
-        label: o.label,
-        value: o.field,
+        label: o.label, value: o.field,
         description: o.description,
       })),
     },
-  ]
+  ],
 };
 
 /** 個別userの設定表示 */

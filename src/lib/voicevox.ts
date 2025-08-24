@@ -1,6 +1,6 @@
 import { spawn } from "child_process";
-import { enginePath, engineUrl } from "../env";
-import { components, operations, paths } from "./openapi/schema";
+import { env } from "./env";
+import { components, paths } from "../openapi/schema";
 import createClient from "openapi-fetch";
 
 class VoiceVoxInfomator {
@@ -8,24 +8,26 @@ class VoiceVoxInfomator {
   skipStrQuery: components['schemas']['AccentPhrase'][] = [];
 
   /** バージョン */
-  version: string = 'fetching version';
+  version?: string;
 
   /** スピーカーの情報 */
   speakers: components['schemas']['Speaker'][] = [];
 
   private speakerIdStyle = new Map<number, string>();
-
-  idToStyleName(id: number): string | undefined {
+  public idToStyleName(id: number): string | undefined {
     return this.speakerIdStyle.get(id);
   }
 
-  async fetches() {
+  public async init() {
     console.log('VOICEVOX INFO FETCH...');
-    const running = await this.isEngineRunning();
-    if (!running) await this.runEngine();
+    this.version = await this.isEngineRunning();
+    if (!this.version) {
+      await this.runEngine();
+      this.version = await this.isEngineRunning();
+    }
 
     await this.setSpeakers();
-    await this.setSkipStrQuery();
+    this.skipStrQuery = await this.getSkipStrQuery();
   }
 
   private async setSpeakers() {
@@ -34,34 +36,32 @@ class VoiceVoxInfomator {
 
     this.speakers = data;
     this.speakerIdStyle = new Map(
-      data.flatMap(speaker => speaker.styles.map(style =>
-        [style.id, `${speaker.name}(${style.name})`]
-      ))
+      data.flatMap(speaker => speaker.styles.map(
+        style => [style.id, `${speaker.name}(${style.name})`]),
+      )
     );
   }
 
-  private async setSkipStrQuery() {
+  private async getSkipStrQuery() {
     const { data, error } = await voicevox.POST('/accent_phrases',
       { params: { query: { speaker: 1, text: "以下略" } } }
     );
     if (!data) throw new Error(error.toString());
-    this.skipStrQuery = data;
+    return data;
   }
 
   private async isEngineRunning() {
-    const FAIL = "Failed to GET";
     try {
       const { data } = await voicevox.GET('/version');
-      this.version = data ?? FAIL;
-      return true;
-    } catch {
-      this.version = FAIL;
-      return false;
+      return data;
+    } catch (error) {
+      console.log('バージョン情報が取得できず。');
     }
-  };
+
+  }
 
   private async runEngine() {
-    const vvProc = spawn(enginePath);
+    const vvProc = spawn(env.ENGINE_PATH);
     vvProc.stdout?.on("data", d => console.log(d.toString()));
     return await new Promise<true | Error>(rs => {
       vvProc.on("close", c => rs(new Error(`エンジンがコード${c}で終了しました。`)));
@@ -79,7 +79,7 @@ class VoiceVoxInfomator {
 }
 
 /** VOICEVOXクライアント */
-export let voicevox = createClient<paths>({ baseUrl: engineUrl });
+export let voicevox = createClient<paths>({ baseUrl: env.ENGINE_API_URL });
 
 /** ヴォイスヴォックス情報シングルちんインスタンス */
 export const vvInfo = new VoiceVoxInfomator();

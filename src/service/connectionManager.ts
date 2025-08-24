@@ -1,7 +1,7 @@
 import { AudioPlayerStatus, AudioResource, createAudioPlayer, createAudioResource, entersState, VoiceConnection } from "@discordjs/voice";
 import { Readable } from "stream";
 import { KGuild, KUser } from "@prisma/client";
-import { voicevox } from "../voicevox";
+import { voicevox } from "../lib/voicevox";
 
 export default class ConnectionManager {
   private player = createAudioPlayer();

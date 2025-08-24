@@ -1,23 +1,27 @@
-import { token } from "../env";
-import { client } from "./bot";
+import { env } from "./lib/env";
+import { client } from "./lib/bot";
 import { setCommands } from "./commands";
 import error from "./events/error";
 import interaction from "./events/interaction";
 import message from "./events/message";
 import ready from "./events/ready";
 import vcUpdate from "./events/vcUpdate";
-import { vvInfo } from "./voicevox";
+import { vvInfo } from "./lib/voicevox";
 
 const main = async () => {
   console.log("running...");
-  await vvInfo.fetches();
+  await vvInfo.init();
   setCommands();
 
-  [
-    error, interaction, message, ready, vcUpdate
-  ].map(c => c(client));
+  client
+    .on(error.name, error.listener)
+    .on(interaction.name, interaction.listener)
+    .on(message.name, message.listener)
+    .on(ready.name, ready.listener)
+    .on(vcUpdate.name, vcUpdate.listener);
 
-  await client.login(token);
+
+  await client.login(env.DISCORD_TOKEN);
 };
 
 main().catch(e => {

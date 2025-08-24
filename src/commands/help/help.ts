@@ -1,5 +1,5 @@
-import { ChatInputCommandInteraction, codeBlock } from "discord.js";
-import commands, { commandAry } from "..";
+import { ChatInputCommandInteraction } from "discord.js";
+import commands from "..";
 import { botDescription, commandHelpEmbed } from "./components";
 
 type Replyable = Parameters<ChatInputCommandInteraction['reply']>[0];
@@ -17,6 +17,6 @@ const cmdFromRep = (option: string | null): Replyable => {
       : "存在しないコマンドです…");
 
   } else {
-    return { embeds: botDescription(commandAry) };
+    return { embeds: botDescription([...commands.values()]) };
   }
-}; 
+};

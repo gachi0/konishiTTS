@@ -1,5 +1,5 @@
 import { ApplicationCommandOptionType } from "discord.js";
-import { managers } from "../bot";
+import { managers } from "../lib/bot";
 import { ICommand } from "../service/types";
 
 const command: ICommand = {

@@ -1,7 +1,6 @@
 import { ChatInputCommandInteraction, codeBlock, GuildMember, GuildTextBasedChannel, PermissionsBitField } from "discord.js";
 import commands from "../commands";
 import { createEvent } from "../service/types";
-import { txtColumns } from "../service/util";
 
 const isAdmin = (m: GuildMember) => m.permissions.has("Administrator");
 
@@ -39,12 +38,13 @@ const chatInputIntr = async (intr: ChatInputCommandInteraction) => {
   }
 
   await cmd.execute(intr, ch)
-    .catch(async (e: Error) =>
-      await intr[
-        intr.replied || intr.deferred ? "followUp" : "reply"
-      ](txtColumns([
+    .catch(async (e: Error) => {
+      const method = intr.replied || intr.deferred ? "followUp" : "reply";
+      const msg = [
         'エラーが発生しました…',
-        codeBlock(`${e.message}${e.stack}`),
-      ]))
-    );
+        codeBlock(`${e.message} ${e.stack}`),
+      ].join('\n');
+
+      await intr[method](msg);
+    });
 };

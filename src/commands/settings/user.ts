@@ -1,14 +1,8 @@
-// import { ICommand, speakersInfo } from "../bot";
-import { ActionRowData, APIEmbed, ApplicationCommandOptionType, ComponentType, EmbedBuilder, MessageActionRowComponentData, SlashCommandBuilder } from "discord.js";
 import { ICommand } from "../../service/types";
-import { db } from "../../bot";
+import { db } from "../../lib/bot";
 import { upsertQuery } from "../../service/db";
-import { isNonNull, isNonNullish, range } from "remeda";
-import { vvInfo } from "../../voicevox";
 import { awaitUserSettingOptionSelect, USER_SETTING_COMPONENT, userSettingView } from "./func";
 import { KUser } from "@prisma/client";
-// import { UserEntity } from "../db";
-// import { addSpeakerOption } from "../domain/util";
 
 const command: ICommand = {
   data: {
@@ -24,11 +18,11 @@ const command: ICommand = {
     // 3. 反映、反映の旨のメッセージを表示。
     // 1. に戻る。
 
-
     const reped = await intr.reply({
       embeds: [userSettingView(user)],
       components: [USER_SETTING_COMPONENT]
     });
+
     await awaitUserSettingOptionSelect(uid, reped);
 
   }

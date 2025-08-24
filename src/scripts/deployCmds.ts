@@ -1,0 +1,53 @@
+import { env } from "../lib/env";
+import { client } from "../lib/bot";
+import commands, { setCommands } from "../commands";
+import { createEvent } from "../service/types";
+import { vvInfo } from "../lib/voicevox";
+
+/**
+ * sample
+ * tsx src/scripts/deployCmds.ts guild 608000464524410900
+ */
+
+const [_0, _1, cmdName, guildId] = process.argv;
+
+const ready = createEvent("ready", async client => {
+  await vvInfo.init();
+  setCommands();
+  const commandData = [...commands.values()].map(c => c.data);
+
+  if (cmdName === "guild") {
+    const guild = await client.guilds.fetch(guildId);
+    await guild.commands.set([]);
+    await guild.commands.set(commandData);
+    console.log(`${guildId}にコマンドを登録しました！`);
+  }
+
+  else if (cmdName === "app") {
+    await client.application.commands.set(commandData);
+    console.log("コマンドを登録しました！");
+  }
+
+  else if (cmdName === "clearguild") {
+    const guild = await client.guilds.fetch(guildId);
+    await guild.commands.set([]);
+    console.log(`${guildId}からコマンドを削除しました！`);
+  }
+
+  else if (cmdName === "clearapp") {
+    await client.application.commands.set([]);
+    console.log("コマンドを削除しました！（反映には数時間かかります）");
+  }
+
+  else {
+    throw Error(`不正な引数: ${cmdName}`);
+  }
+
+  client.destroy();
+});
+
+(async () => {
+  client.on(ready.name, ready.listener);
+  await client.login(env.DISCORD_TOKEN);
+})();
+

@@ -1,7 +1,6 @@
 import { APIEmbed, APIEmbedField, ApplicationCommandOptionData, ApplicationCommandOptionType, hyperlink } from "discord.js";
 import { ICommand } from "../../service/types";
-import dedent from "dedent";
-import { vvInfo } from "../../voicevox";
+import { vvInfo } from "../../lib/voicevox";
 
 const optionTypes: Record<number, string> = {
   [ApplicationCommandOptionType.Subcommand]: "サブコマンド",
@@ -17,8 +16,7 @@ const optionTypes: Record<number, string> = {
 };
 
 
-// 定数ではなく、関数で生成しなければいけない理由は何か？
-// なんかたしか昔定数で生成したほうが効率いいと思ってそうしようとしたらできなかった、何故かは忘れた、なんだっけ
+// 定数ではなく、関数で生成しなければいけない理由は、ヘルプコマンド自体が動的に生成されるから
 
 
 export const commandHelpEmbed = (
@@ -29,9 +27,10 @@ export const commandHelpEmbed = (
   fields: [
     {
       name: "情報",
-      value: dedent`
-        実行可能な人: ${cmd.adminOnly ? "管理人のみ" : "全員"}
-        実行可能な場所: ${cmd.guildOnly ? "サーバー内のみ" : "全て"}`
+      value: [
+        `実行可能な人: ${cmd.adminOnly ? "管理人のみ" : "全員"}`,
+        `実行可能な場所: ${cmd.guildOnly ? "サーバー内のみ" : "全て"}`,
+      ].join('\n')
     },
     ...cmd.data.options ? [optionsField(cmd.data.options)] : []
   ]
@@ -47,34 +46,35 @@ const optionsField = (
       o.type !== ApplicationCommandOptionType.SubcommandGroup
       && o.type !== ApplicationCommandOptionType.Subcommand
     )
-    .map(o => dedent`
-      **${o.name}**
-      [${o.required ? "必須" : "省略可"}]
-      [${optionTypes[o.type - 1]}]
-      ${o.description}`,
-    )
+    .map(o => [
+      `**${o.name}**`,
+      `[${o.required ? "必須" : "省略可"}]`,
+      `[${optionTypes[o.type - 1]}]`,
+      o.description,
+    ].join('\n'))
     .join('\n'),
 });
 
 
-export const botDescription = (commandAry: ICommand[]): APIEmbed[] => [
+export const botDescription = (commands: ICommand[]): APIEmbed[] => [
   {
     title: "概要",
     description: "VOICEVOXの読み上げBotです。"
       + "`/join`コマンドで読み上げを開始します！",
     fields: [{
       name: "リンク",
-      value: dedent`
-      - ${hyperlink('リポジトリ', 'https://github.com/gachi0/konishiTTS')}
-      - ${hyperlink('VOICEVOX', 'https://voicevox.hiroshiba.jp')}`
+      value: [
+        `- ${hyperlink('リポジトリ', 'https://github.com/gachi0/konishiTTS')}`,
+        `- ${hyperlink('VOICEVOX', 'https://voicevox.hiroshiba.jp')}`,
+      ].join('\n')
     }],
     footer: { text: `クレジット\nVOICEVOX: ${vvInfo.speakers.join(", ")}` }
   },
   {
     title: "コマンド一覧",
-    fields: commandAry.map(({ data }) => ({
-      name: `/${data.name}`,
-      value: data.description,
+    fields: commands.map(({ data: d }) => ({
+      name: `/${d.name}`,
+      value: d.description,
       inline: true
     })),
   }
@@ -90,7 +90,7 @@ export const helpSlashCommandData = (cmds: ICommand[]) => ({
       name: "command",
       description: "使い方が知りたいコマンド名",
       choices: cmds.map(
-        ({ data }) => ({ name: data.name, value: data.description })
+        ({ data: d }) => ({ name: d.name, value: d.description })
       )
     }
   ]

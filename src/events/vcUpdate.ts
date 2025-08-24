@@ -1,5 +1,5 @@
 import { GuildMember, VoiceBasedChannel } from "discord.js";
-import { client, db, managers } from "../bot";
+import { client, db, managers } from "../lib/bot";
 import { upsertQuery } from "../service/db";
 import { createEvent } from "../service/types";
 

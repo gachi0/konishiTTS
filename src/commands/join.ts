@@ -1,4 +1,4 @@
-import { managers } from "../bot";
+import { managers } from "../lib/bot";
 import { GuildMember } from "discord.js";
 import { joinVoiceChannel } from "@discordjs/voice";
 import ConnectionManager from "../service/connectionManager";
