@@ -13,7 +13,7 @@ class VoiceVoxInfomator {
   /** スピーカーの情報 */
   speakers: components['schemas']['Speaker'][] = [];
 
-  private speakerIdStyle = new Map<number, string>();
+  public speakerIdStyle = new Map<number, string>();
   public idToStyleName(id: number): string | undefined {
     return this.speakerIdStyle.get(id);
   }

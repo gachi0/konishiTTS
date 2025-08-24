@@ -22,9 +22,9 @@
   "bin": "build/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx tsx build/index.js",
+    "start": "npx tsx src/index.ts",
     "genapi": "npx openapi-typescript http://localhost:50021/openapi.json -o ./src/openapi/schema.ts",
-    "registcmd": "npx ts-node src/deployCmds.ts"
+    "registcmd": "npx tsx src/scripts/commands.ts"
   },
   "repository": {
     "type": "git",
