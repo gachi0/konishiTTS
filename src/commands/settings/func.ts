@@ -14,7 +14,7 @@ export const USER_SETTING_INFO = [
   cso("speaker", {
     label: 'キャラクター (スタイル)',
     description: '喋る人',
-    showText: m => vvInfo.idToStyleName(m.speaker) ?? '設定なし',
+    showText: m => vvInfo.styleMap.get(m.speaker) ?? '設定なし',
   }),
 ];
 

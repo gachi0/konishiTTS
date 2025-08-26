@@ -6,7 +6,7 @@ export default createEvent("ready", async client => {
 
   await client.user.setActivity(
     "/helpで使い方を表示",
-    { type: ActivityType.Competing }
+    { type: ActivityType.Competing },
   );
 });
 

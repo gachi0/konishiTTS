@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, codeBlock, GuildMember, GuildTextBasedChannel, PermissionsBitField } from "discord.js";
-import commands from "../commands";
+import { commands } from "../commands";
 import { createEvent } from "../service/types";
 
 const isAdmin = (m: GuildMember) => m.permissions.has("Administrator");

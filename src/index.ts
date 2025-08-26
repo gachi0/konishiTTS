@@ -1,17 +1,18 @@
 import { env } from "./lib/env";
 import { client } from "./lib/bot";
-import { setCommands } from "./commands";
+import { setupCommands } from "./commands";
 import error from "./events/error";
 import interaction from "./events/interaction";
 import message from "./events/message";
 import ready from "./events/ready";
 import vcUpdate from "./events/vcUpdate";
-import { vvInfo } from "./lib/voicevox";
+import { setupVvInfo, vvClient } from "./lib/voicevox";
 
 const main = async () => {
   console.log("running...");
-  await vvInfo.init();
-  setCommands();
+  await vvClient.init();
+  setupVvInfo();
+  setupCommands();
 
   client
     .on(error.name, error.listener)

@@ -1,31 +1,69 @@
 import { ICommand } from "../../service/types";
 import { db } from "../../lib/bot";
 import { upsertQuery } from "../../service/db";
-import { awaitUserSettingOptionSelect, USER_SETTING_COMPONENT, userSettingView } from "./func";
-import { KUser } from "@prisma/client";
+import { userSettingView } from "./func";
+import { APIEmbedField, ApplicationCommandNumericOptionData, ApplicationCommandOptionChoiceData, ApplicationCommandOptionType } from "discord.js";
+import { vvInfo } from "../../lib/voicevox";
 
-const command: ICommand = {
+const command = (): ICommand => ({
   data: {
     name: "user_setting",
     description: "Botのユーザー設定を変更/閲覧します。話すキャラクターはここで変更できます。",
+    options: [
+      {
+        type: ApplicationCommandOptionType.Boolean,
+        name: 'read_message',
+        description: '自分のメッセージを読み上げるかどうか。読み上げる場合はTrueを、読み上げたくない場合はFalseを指定してください',
+      },
+      ...vvInfo.chunkedStyles
+        .map<ApplicationCommandNumericOptionData>((page, i) => ({
+          type: ApplicationCommandOptionType.Integer,
+          name: `speaker${i}`,
+          description: `話者(${i + 1}ページ目)`,
+          choices: page.map<ApplicationCommandOptionChoiceData<number>>(s => ({
+            name: s[1],
+            value: s[0],
+          }))
+        })),
+    ]
   },
   async execute(intr) {
     const uid = intr.user.id;
     const user = await db.kUser.upsert(upsertQuery(uid));
+    const isRead = intr.options.getBoolean('read_message') ?? undefined;
 
-    // 1. 設定を表示、変更する設定を選ばせる (セレクトメニュ) 用意
-    // 2. 変更された設定の詳細を表示 (説明, 設定値の説明など) 変更可能コンポーネント表示。
-    // 3. 反映、反映の旨のメッセージを表示。
-    // 1. に戻る。
+    // 最初の非null値探索
+    const speaker = vvInfo.chunkedStyles
+      .map((_, i) => intr.options.getInteger(`speaker${i}`))
+      .find(v => v != null);
 
-    const reped = await intr.reply({
-      embeds: [userSettingView(user)],
-      components: [USER_SETTING_COMPONENT]
+    // DB値更新
+    await db.kUser.update({
+      where: { id: uid },
+      data: { speaker, isRead },
     });
 
-    await awaitUserSettingOptionSelect(uid, reped);
+    const fields: APIEmbedField[] = [
+      ...(
+        isRead !== undefined ? [{
+          name: '読み上げオプション',
+          value: `**${user.isRead}** から **${isRead}** に変更しました。`,
+        }] : []
+      ),
+      ...(
+        speaker !== undefined ? [{
+          name: 'キャラクター(スタイル)',
+          value: `**${vvInfo.styleMap.get(user.speaker)}** から **${vvInfo.styleMap.get(speaker)}** に変更しました。`,
+        }] : []
+      ),
+    ];
 
+    await intr.reply({
+      embeds: fields.length === 0
+        ? [userSettingView(user)]
+        : [{ fields }],
+    });
   }
-};
+});
 
 export default command;

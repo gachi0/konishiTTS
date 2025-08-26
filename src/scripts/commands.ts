@@ -1,19 +1,21 @@
 import { env } from "../lib/env";
 import { client } from "../lib/bot";
-import commands, { setCommands } from "../commands";
+import { commands, setupCommands } from "../commands";
 import { createEvent } from "../service/types";
-import { vvInfo } from "../lib/voicevox";
+import { setupVvInfo, vvClient, vvInfo } from "../lib/voicevox";
 
 /**
  * sample
- * tsx src/scripts/deployCmds.ts guild 608000464524410900
+ * npx tsx src/scripts/commands.ts guild 608000464524410900
  */
 
 const [_0, _1, cmdName, guildId] = process.argv;
 
 const ready = createEvent("ready", async client => {
-  await vvInfo.init();
-  setCommands();
+  await vvClient.init();
+  setupVvInfo();
+  setupCommands();
+
   const commandData = [...commands.values()].map(c => c.data);
 
   if (cmdName === "guild") {
@@ -44,6 +46,7 @@ const ready = createEvent("ready", async client => {
   }
 
   client.destroy();
+
 });
 
 (async () => {

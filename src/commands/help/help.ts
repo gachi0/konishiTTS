@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import commands from "..";
+import { commands } from "..";
 import { botDescription, commandHelpEmbed } from "./components";
 
 type Replyable = Parameters<ChatInputCommandInteraction['reply']>[0];

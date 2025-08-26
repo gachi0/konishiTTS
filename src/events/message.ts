@@ -35,5 +35,5 @@ export default createEvent("messageCreate", async msg => {
   text += msg.attachments.size ? `${msg.attachments.size}件のファイル` : '';
 
   // 文字列を読み上げる
-  await manager.speak(text, guild, user);
+  await manager.speak(text, user.speaker ?? guild.speaker);
 });

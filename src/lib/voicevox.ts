@@ -2,62 +2,76 @@ import { spawn } from "child_process";
 import { env } from "./env";
 import { components, paths } from "../openapi/schema";
 import createClient from "openapi-fetch";
+import { chunk } from "remeda";
 
-class VoiceVoxInfomator {
-  /** 省略時に追加される音声のクエリ */
-  skipStrQuery: components['schemas']['AccentPhrase'][] = [];
-
+export type VoicevoxInfoStore = {
   /** バージョン */
-  version?: string;
-
+  version: string;
   /** スピーカーの情報 */
-  speakers: components['schemas']['Speaker'][] = [];
+  speakers: components['schemas']['Speaker'][];
+  /** スタイルID -> スピーカースタイル名 */
+  styleMap: Map<number, string>;
+  /** スピーカースタイル名25分割 */
+  chunkedStyles: [number, string][][];
+  /** 省略時に追加される音声のクエリ */
+  skipQuery: components['schemas']['AccentPhrase'][];
+};
 
-  public speakerIdStyle = new Map<number, string>();
-  public idToStyleName(id: number): string | undefined {
-    return this.speakerIdStyle.get(id);
+
+/** openapi-fetchのレスポンスからerror時に例外を投げるだけ */
+const handleResponse = async <T>(
+  responsePromise: Promise<{ data?: T; error?: unknown; }>
+): Promise<T> => {
+  const { data, error } = await responsePromise;
+
+  if (error) {
+    throw new Error(`API request failed ${error}`);
   }
+
+  return data as T;
+};
+
+export class VoicevoxClient {
+  private vv = createClient<paths>({
+    baseUrl: env.ENGINE_API_URL,
+  });
 
   public async init() {
     console.log('VOICEVOX INFO FETCH...');
-    this.version = await this.isEngineRunning();
-    if (!this.version) {
+    const { data: version } = await this.vv.GET('/version');
+
+    if (version === undefined) {
       await this.runEngine();
-      this.version = await this.isEngineRunning();
     }
-
-    await this.setSpeakers();
-    this.skipStrQuery = await this.getSkipStrQuery();
   }
 
-  private async setSpeakers() {
-    const { data, error } = await voicevox.GET('/speakers');
-    if (!data) throw new Error(error.toString());
-
-    this.speakers = data;
-    this.speakerIdStyle = new Map(
-      data.flatMap(speaker => speaker.styles.map(
-        style => [style.id, `${speaker.name}(${style.name})`]),
-      )
-    );
+  public async audioQuery(
+    speaker: number,
+    text: string,
+  ) {
+    const audioQuery = await handleResponse(this.vv.POST('/audio_query', {
+      params: { query: { speaker, text } }
+    }));
+    return audioQuery;
   }
 
-  private async getSkipStrQuery() {
-    const { data, error } = await voicevox.POST('/accent_phrases',
-      { params: { query: { speaker: 1, text: "以下略" } } }
-    );
-    if (!data) throw new Error(error.toString());
-    return data;
+  public async synth(
+    speaker: number,
+    body: components['schemas']['AudioQuery'],
+  ) {
+    const synth = await handleResponse(this.vv.POST(`/synthesis`, {
+      body: body,
+      params: { query: { speaker } },
+      parseAs: "arrayBuffer",
+    }));
+    return synth;
   }
 
-  private async isEngineRunning() {
-    try {
-      const { data } = await voicevox.GET('/version');
-      return data;
-    } catch (error) {
-      console.log('バージョン情報が取得できず。');
-    }
-
+  public async speakerInfo(speaker_uuid: string) {
+    const speakerData = await handleResponse(this.vv.GET('/speaker_info', {
+      params: { query: { speaker_uuid } }
+    }));
+    return speakerData;
   }
 
   private async runEngine() {
@@ -76,10 +90,27 @@ class VoiceVoxInfomator {
       });
     });
   }
+
+  public async fetchInfo(): Promise<VoicevoxInfoStore> {
+    const version = await handleResponse(this.vv.GET('/version'));
+    const speakers = await handleResponse(this.vv.GET('/speakers'));
+    const { accent_phrases: skipQuery } = await this.audioQuery(1, '以下略');
+
+    const styles = speakers.flatMap(speaker => speaker.styles.map<[number, string]>(
+      style => [style.id, `${speaker.name}(${style.name})`],
+    ));
+    const styleMap = new Map(styles);
+    const chunkedStyles = chunk(styles, 25);
+
+    return { version, skipQuery, speakers, styleMap, chunkedStyles };
+  }
 }
 
-/** VOICEVOXクライアント */
-export let voicevox = createClient<paths>({ baseUrl: env.ENGINE_API_URL });
-
 /** ヴォイスヴォックス情報シングルちんインスタンス */
-export const vvInfo = new VoiceVoxInfomator();
+export const vvClient = new VoicevoxClient();
+
+/** VOICEVOX起動時取得情報 */
+export let vvInfo: VoicevoxInfoStore;
+export const setupVvInfo = async () => {
+  vvInfo = await vvClient.fetchInfo();
+};

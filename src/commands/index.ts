@@ -1,35 +1,24 @@
 
-import { ICommand, IRawCommand } from "../service/types";
+import { ICommand } from "../service/types";
 import join from "./join";
 import leave from "./leave";
 import skip from "./skip";
 import speaker from "./speaker";
 import userSetting from "./settings/user";
 
-const commands = new Map<string, ICommand>();
+export const commands = new Map<string, ICommand>();
 
 /** 実行時にVVInfoとかのあとに実行させてね */
-export const setCommands = () => {
+export const setupCommands = (): Map<string, ICommand> => {
 
-  const beforeCmds: IRawCommand[] = [
-    // help,
-    join,
-    leave,
-    skip,
-    speaker,
-    userSetting,
-  ];
+  [join, leave, skip]
+    .forEach(c => commands.set(c.data.name, c));
 
-  for (const c of beforeCmds) {
-    const data = typeof c.data === 'function'
-      ? c.data()
-      : c.data;
+  [speaker, userSetting]
+    .forEach(getCmd => {
+      const c = getCmd();
+      commands.set(c.data.name, c);
+    });
 
-    console.log(data);
-    const parsed = { ...c, data };
-
-    commands.set(data.name, parsed);
-  }
+  return commands;
 };
-
-export default commands;

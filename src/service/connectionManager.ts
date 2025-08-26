@@ -1,18 +1,20 @@
 import { AudioPlayerStatus, AudioResource, createAudioPlayer, createAudioResource, entersState, VoiceConnection } from "@discordjs/voice";
 import { Readable } from "stream";
-import { KGuild, KUser } from "@prisma/client";
-import { voicevox } from "../lib/voicevox";
+import { vvClient } from "../lib/voicevox";
 
 export default class ConnectionManager {
   private player = createAudioPlayer();
   /** 再生待ちの音声たち */
   private queue: AudioResource[] = [];
-  /** 読み上げるボイスチャンネルのid */
-  chId;
-  /** Botの接続 */
-  conn;
   /** 再生中かどうか */
   private isPlaying = false;
+
+  constructor(
+    /** 読み上げるボイスチャンネルのid */
+    readonly chId: string,
+    /** Botの接続 */
+    readonly conn: VoiceConnection,
+  ) { }
 
   /** 再生開始 */
   private async start() {
@@ -49,41 +51,15 @@ export default class ConnectionManager {
   }
 
   /** textを読み上げる */
-  async speak(text: string, guild: KGuild, user: KUser) {
+  async speak(text: string, speaker: number) {
+    const query = await vvClient.audioQuery(speaker, text);
+    const ab = await vvClient.synth(speaker, query);
 
-    const speaker = user?.speaker ?? guild.speaker;
-
-    // 音声合成用のクエリを生成
-    const audioQuery = await voicevox.POST('/audio_query', {
-      params: {
-        query: { speaker, text }
-      }
-    });
-
-    if (!audioQuery.data) {
-      console.log(audioQuery.error);
-      return;
-    }
-
-    // 音声合成
-    const synth = await voicevox.POST(`/synthesis`, {
-      body: audioQuery.data,
-      params: { query: { speaker } },
-      parseAs: "arrayBuffer",
-    });
-
-    if (!synth.data) return;
-
-    const buffer = Buffer.from(synth.data);
+    const buffer = Buffer.from(ab);
     const readable = Readable.from([buffer]);
     const resource = createAudioResource(readable);
 
     await this.play(resource);
-  }
-
-  constructor(chId: string, conn: VoiceConnection) {
-    this.conn = conn;
-    this.chId = chId;
   }
 }
 

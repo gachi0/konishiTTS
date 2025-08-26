@@ -1,13 +1,13 @@
 import { ApplicationCommandOptionType, AttachmentBuilder, ComponentType, StringSelectMenuBuilder, StringSelectMenuComponent, StringSelectMenuInteraction } from "discord.js";
-import { IRawCommand } from "../service/types";
-import { voicevox, vvInfo } from "../lib/voicevox";
+import { ICommand } from "../service/types";
+import { vvClient, vvInfo } from "../lib/voicevox";
 import { chunk } from "remeda";
 import { db } from "../lib/bot";
 
 const SPEAKER_CID = 'SET_SPEAKER_STYLE';
 
-const command: IRawCommand = {
-  data: () => ({
+const command = (): ICommand => ({
+  data: {
     name: "speaker",
     description: "キャラクター情報を出します",
     options: chunk(vvInfo.speakers, 25).map((chunk, i) => ({
@@ -18,7 +18,7 @@ const command: IRawCommand = {
         name: s.name, value: s.speaker_uuid,
       })),
     }))
-  }),
+  },
 
   execute: async intr => {
     const chunks = chunk(vvInfo.speakers, 25);
@@ -31,6 +31,11 @@ const command: IRawCommand = {
       );
 
     const speaker = vvInfo.speakers.find(s => s.speaker_uuid === param);
+
+    if (!speaker) {
+      await intr.followUp('speaker取れなかったわ');
+      return;
+    }
 
     if (!param) {
       await intr.reply({
@@ -46,14 +51,7 @@ const command: IRawCommand = {
       return;
     }
 
-    const { data: speakerData } = await voicevox.GET('/speaker_info', {
-      params: { query: { speaker_uuid: param } }
-    });
-
-    if (!speakerData || !speaker) {
-      await intr.followUp('speaker取れなかったわ');
-      return;
-    }
+    const speakerData = await vvClient.speakerInfo(param);
 
     await intr.deferReply();
 
@@ -108,6 +106,6 @@ const command: IRawCommand = {
 
     await res.reply(`更新したかも～`);
   }
-};
+});
 
 export default command;

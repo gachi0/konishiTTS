@@ -39,7 +39,8 @@ const vcJoin = async (member: GuildMember, vc: VoiceBasedChannel) => {
   if (!guild.vcReadName) return;
   if (manager.conn.joinConfig.channelId === vc.id) {
     await manager.speak(
-      guild.joinText.replace("{name}", member.displayName), guild, user
+      guild.joinText.replace("{name}", member.displayName),
+      user.speaker ?? guild.speaker,
     );
   }
 };
