@@ -19,7 +19,7 @@ const command = (): ICommand => ({
         .map<ApplicationCommandNumericOptionData>((page, i) => ({
           type: ApplicationCommandOptionType.Integer,
           name: `speaker${i}`,
-          description: `話者(${i + 1}ページ目)`,
+          description: `設定可能な話者の${i + 1}ページ目です。ここに乗っていないキャラクターは他のページを探してください。`,
           choices: page.map<ApplicationCommandOptionChoiceData<number>>(s => ({
             name: s[1],
             value: s[0],

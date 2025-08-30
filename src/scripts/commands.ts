@@ -22,7 +22,7 @@ const ready = createEvent("clientReady", async client => {
     const guild = await client.guilds.fetch(guildId);
     await guild.commands.set([]);
     await guild.commands.set(commandData);
-    console.log(`${guildId}にコマンドを登録しました！`);
+    console.log(`${guild.name}にコマンドを登録しました！`);
   }
 
   else if (cmdName === "app") {
@@ -33,7 +33,7 @@ const ready = createEvent("clientReady", async client => {
   else if (cmdName === "clearguild") {
     const guild = await client.guilds.fetch(guildId);
     await guild.commands.set([]);
-    console.log(`${guildId}からコマンドを削除しました！`);
+    console.log(`${guild.name}からコマンドを削除しました！`);
   }
 
   else if (cmdName === "clearapp") {

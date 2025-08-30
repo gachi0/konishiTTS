@@ -19,41 +19,44 @@ const optionTypes: Record<number, string> = {
 // 定数ではなく、関数で生成しなければいけない理由は、ヘルプコマンド自体が動的に生成されるから
 
 
-export const commandHelpEmbed = (
-  cmd: ICommand,
-): APIEmbed => ({
-  title: cmd.data.name,
-  description: cmd.data.description ?? 'なし',
-  fields: [
-    {
-      name: "情報",
-      value: [
-        `実行可能な人: ${cmd.adminOnly ? "管理人のみ" : "全員"}`,
-        `実行可能な場所: ${cmd.guildOnly ? "サーバー内のみ" : "全て"}`,
-      ].join('\n')
-    },
-    ...cmd.data.options ? [optionsField(cmd.data.options)] : []
-  ]
-});
+export const helpEmbedFromCommand = (cmd: ICommand): APIEmbed[] => [
+  {
+    title: cmd.data.name,
+    description: cmd.data.description ?? '説明なし',
+    fields: [
+      {
+        name: '実行可能な人',
+        value: cmd.adminOnly ? '管理人のみ' : '全員',
+      },
+      {
+        name: '実行可能な場所',
+        value: cmd.guildOnly ? 'サーバー内のみ' : '全て',
+      }
+    ]
+  },
+  ...(cmd.data.options ? [{
+    title: 'オプション',
+    fields: optionsField(cmd.data.options),
+  }] : []),
+];
 
 
 const optionsField = (
   options: readonly ApplicationCommandOptionData[]
-): APIEmbedField => ({
-  name: 'オプション',
-  value: options
-    .filter(o =>
-      o.type !== ApplicationCommandOptionType.SubcommandGroup
-      && o.type !== ApplicationCommandOptionType.Subcommand
-    )
-    .map(o => [
-      `**${o.name}**`,
-      `[${o.required ? "必須" : "省略可"}]`,
-      `[${optionTypes[o.type - 1]}]`,
+): APIEmbedField[] => options
+  .filter(o =>
+    o.type !== ApplicationCommandOptionType.SubcommandGroup
+    && o.type !== ApplicationCommandOptionType.Subcommand
+  )
+  .map(o => ({
+    inline: true,
+    name: o.name,
+    value: [
+      `- [${o.required ? "必須" : "省略可"}]`,
+      `- [${optionTypes[o.type]}]`,
       o.description,
-    ].join('\n'))
-    .join('\n'),
-});
+    ].join('\n'),
+  }));
 
 
 export const botDescription = (commands: ICommand[]): APIEmbed[] => [
@@ -68,7 +71,12 @@ export const botDescription = (commands: ICommand[]): APIEmbed[] => [
         `- ${hyperlink('VOICEVOX', 'https://voicevox.hiroshiba.jp')}`,
       ].join('\n')
     }],
-    footer: { text: `クレジット\nVOICEVOX: ${vvInfo.speakers.join(", ")}` }
+    footer: {
+      text: [
+        `クレジット`,
+        `VOICEVOX: ${vvInfo.speakers.map(s => s.name).join(", ")}`
+      ].join('\n'),
+    }
   },
   {
     title: "コマンド一覧",

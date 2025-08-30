@@ -11,7 +11,7 @@ import { setupVvInfo, vvClient } from "./lib/voicevox";
 const main = async () => {
   console.log("running...");
   await vvClient.init();
-  setupVvInfo();
+  await setupVvInfo();
   setupCommands();
 
   client
@@ -20,7 +20,6 @@ const main = async () => {
     .on(message.name, message.listener)
     .on(ready.name, ready.listener)
     .on(vcUpdate.name, vcUpdate.listener);
-
 
   await client.login(env.DISCORD_TOKEN);
 };

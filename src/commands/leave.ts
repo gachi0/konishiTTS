@@ -1,4 +1,3 @@
-import { SlashCommandBuilder } from "discord.js";
 import { managers } from "../lib/bot";
 import { ICommand } from "../service/types";
 
