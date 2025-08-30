@@ -38,11 +38,13 @@ export class VoicevoxClient {
 
   public async init() {
     console.log('VOICEVOX INFO FETCH...');
-    const { data: version } = await this.vv.GET('/version');
 
-    if (version === undefined) {
+    try {
+      await this.vv.GET('/version');
+    } catch (error) {
       await this.runEngine();
     }
+
   }
 
   public async audioQuery(
@@ -111,6 +113,8 @@ export const vvClient = new VoicevoxClient();
 
 /** VOICEVOX起動時取得情報 */
 export let vvInfo: VoicevoxInfoStore;
+
+/** 起動時に実行しろ */
 export const setupVvInfo = async () => {
   vvInfo = await vvClient.fetchInfo();
 };

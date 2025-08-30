@@ -1,6 +1,6 @@
 import { GuildMember, VoiceBasedChannel } from "discord.js";
 import { client, db, managers } from "../lib/bot";
-import { upsertQuery } from "../service/db";
+import { getOrCreate } from "../service/db";
 import { createEvent } from "../service/types";
 
 export default createEvent("voiceStateUpdate", async (before, after) => {
@@ -31,8 +31,8 @@ const vcJoin = async (member: GuildMember, vc: VoiceBasedChannel) => {
   const manager = managers.get(vc.guild.id);
   if (!manager) return;
 
-  const guild = await db.kGuild.upsert(upsertQuery(vc.guildId));
-  const user = await db.kUser.upsert(upsertQuery(member.id));
+  const guild = await db.kGuild.upsert(getOrCreate(vc.guildId));
+  const user = await db.kUser.upsert(getOrCreate(member.id));
 
   // 参加したのが自分だった場合、読み上げない
   if (member.id === client.user?.id) return;
@@ -49,7 +49,7 @@ const vcLeave = async (member: GuildMember, vc: VoiceBasedChannel) => {
   const manager = managers.get(vc.guild.id);
   if (!manager || manager.chId === vc.id) return;
 
-  const guild = await db.kGuild.upsert(upsertQuery(vc.guildId));
+  const guild = await db.kGuild.upsert(getOrCreate(vc.guildId));
 
   // 自分が通話から抜けたら
   if (member.id === client.user?.id) {

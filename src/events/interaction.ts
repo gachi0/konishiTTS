@@ -2,8 +2,6 @@ import { ChatInputCommandInteraction, codeBlock, GuildMember, GuildTextBasedChan
 import { commands } from "../commands";
 import { createEvent } from "../service/types";
 
-const isAdmin = (m: GuildMember) => m.permissions.has("Administrator");
-
 export default createEvent("interactionCreate", async intr => {
   if (intr instanceof ChatInputCommandInteraction) {
     await chatInputIntr(intr);

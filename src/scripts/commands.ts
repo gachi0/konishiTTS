@@ -11,9 +11,9 @@ import { setupVvInfo, vvClient, vvInfo } from "../lib/voicevox";
 
 const [_0, _1, cmdName, guildId] = process.argv;
 
-const ready = createEvent("ready", async client => {
+const ready = createEvent("clientReady", async client => {
   await vvClient.init();
-  setupVvInfo();
+  await setupVvInfo();
   setupCommands();
 
   const commandData = [...commands.values()].map(c => c.data);
@@ -45,7 +45,6 @@ const ready = createEvent("ready", async client => {
     throw Error(`不正な引数: ${cmdName}`);
   }
 
-  client.destroy();
 
 });
 

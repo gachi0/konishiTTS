@@ -1,6 +1,6 @@
 import { ICommand } from "../../service/types";
 import { db } from "../../lib/bot";
-import { upsertQuery } from "../../service/db";
+import { getOrCreate } from "../../service/db";
 import { userSettingView } from "./func";
 import { APIEmbedField, ApplicationCommandNumericOptionData, ApplicationCommandOptionChoiceData, ApplicationCommandOptionType } from "discord.js";
 import { vvInfo } from "../../lib/voicevox";
@@ -29,7 +29,7 @@ const command = (): ICommand => ({
   },
   async execute(intr) {
     const uid = intr.user.id;
-    const user = await db.kUser.upsert(upsertQuery(uid));
+    const dbUser = await db.kUser.upsert(getOrCreate(uid));
     const isRead = intr.options.getBoolean('read_message') ?? undefined;
 
     // 最初の非null値探索
@@ -47,20 +47,20 @@ const command = (): ICommand => ({
       ...(
         isRead !== undefined ? [{
           name: '読み上げオプション',
-          value: `**${user.isRead}** から **${isRead}** に変更しました。`,
+          value: `**${dbUser.isRead}** から **${isRead}** に変更しました。`,
         }] : []
       ),
       ...(
         speaker !== undefined ? [{
           name: 'キャラクター(スタイル)',
-          value: `**${vvInfo.styleMap.get(user.speaker)}** から **${vvInfo.styleMap.get(speaker)}** に変更しました。`,
+          value: `**${vvInfo.styleMap.get(dbUser.speaker)}** から **${vvInfo.styleMap.get(speaker)}** に変更しました。`,
         }] : []
       ),
     ];
 
     await intr.reply({
       embeds: fields.length === 0
-        ? [userSettingView(user)]
+        ? [userSettingView(dbUser)]
         : [{ fields }],
     });
   }

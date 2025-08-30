@@ -1,5 +1,5 @@
 import { db, managers } from "../lib/bot";
-import { upsertQuery } from "../service/db";
+import { getOrCreate } from "../service/db";
 import { createEvent } from "../service/types";
 
 export default createEvent("messageCreate", async msg => {
@@ -15,10 +15,10 @@ export default createEvent("messageCreate", async msg => {
   if (![manager.chId, manager.conn.joinConfig.channelId].includes(msg.channelId)) return;
 
   // 設定を取得
-  const user = await db.kUser.upsert(upsertQuery(msg.author.id));
+  const user = await db.kUser.upsert(getOrCreate(msg.author.id));
   if (!user.isRead) return;
 
-  const guild = await db.kGuild.upsert(upsertQuery(msg.guildId));
+  const guild = await db.kGuild.upsert(getOrCreate(msg.guildId));
 
   // 読み上げるための文字列
   let text = guild.readName ? msg.author.username : '';
