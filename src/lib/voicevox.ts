@@ -4,11 +4,13 @@ import { components, paths } from "../openapi/schema";
 import createClient from "openapi-fetch";
 import { chunk } from "remeda";
 
+export type VVSpeaker = components['schemas']['Speaker'];
+
 export type VoicevoxInfoStore = {
   /** バージョン */
   version: string;
   /** スピーカーの情報 */
-  speakers: components['schemas']['Speaker'][];
+  speakers: VVSpeaker[];
   /** スタイルID -> スピーカースタイル名 */
   styleMap: Map<number, string>;
   /** スピーカースタイル名25分割 */

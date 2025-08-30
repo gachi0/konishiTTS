@@ -2,6 +2,7 @@ import { ApplicationCommandOptionType, ChatInputCommandInteraction } from "disco
 import { commands } from "..";
 import { botDescription, helpEmbedFromCommand } from "./components";
 import { ICommand } from "../../service/types";
+import { vvInfo } from "../../lib/voicevox";
 
 export const genHelp = (commandArray: ICommand[]): ICommand => ({
   data: {
@@ -27,7 +28,7 @@ export const genHelp = (commandArray: ICommand[]): ICommand => ({
       );
     } else {
       await intr.reply({
-        embeds: botDescription([...commands.values()]),
+        embeds: botDescription([...commands.values()], vvInfo.speakers),
       });
     }
   },

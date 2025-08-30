@@ -3,9 +3,9 @@ import { db } from "../../lib/bot";
 import { getOrCreate } from "../../service/db";
 import { userSettingView } from "./func";
 import { APIEmbedField, ApplicationCommandNumericOptionData, ApplicationCommandOptionChoiceData, ApplicationCommandOptionType } from "discord.js";
-import { vvInfo } from "../../lib/voicevox";
+import { VoicevoxInfoStore } from "../../lib/voicevox";
 
-const command = (): ICommand => ({
+const command = (vvInfo: VoicevoxInfoStore): ICommand => ({
   data: {
     name: "user_setting",
     description: "Botのユーザー設定を変更/閲覧します。話すキャラクターはここで変更できます。",

@@ -1,6 +1,6 @@
 import { APIEmbed, APIEmbedField, ApplicationCommandOptionData, ApplicationCommandOptionType, hyperlink } from "discord.js";
 import { ICommand } from "../../service/types";
-import { vvInfo } from "../../lib/voicevox";
+import { VVSpeaker } from "../../lib/voicevox";
 
 const optionTypes: Record<number, string> = {
   [ApplicationCommandOptionType.Subcommand]: "サブコマンド",
@@ -59,7 +59,7 @@ const optionsField = (
   }));
 
 
-export const botDescription = (commands: ICommand[]): APIEmbed[] => [
+export const botDescription = (commands: ICommand[], speakers: VVSpeaker[]): APIEmbed[] => [
   {
     title: "概要",
     description: "VOICEVOXの読み上げBotです。"
@@ -74,7 +74,7 @@ export const botDescription = (commands: ICommand[]): APIEmbed[] => [
     footer: {
       text: [
         `クレジット`,
-        `VOICEVOX: ${vvInfo.speakers.map(s => s.name).join(", ")}`
+        `VOICEVOX: ${speakers.map(s => s.name).join(", ")}`
       ].join('\n'),
     }
   },

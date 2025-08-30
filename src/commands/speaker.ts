@@ -1,12 +1,12 @@
 import { ApplicationCommandOptionType, AttachmentBuilder, ComponentType, StringSelectMenuBuilder, StringSelectMenuComponent, StringSelectMenuInteraction } from "discord.js";
 import { ICommand } from "../service/types";
-import { vvClient, vvInfo } from "../lib/voicevox";
+import { VoicevoxInfoStore, vvClient } from "../lib/voicevox";
 import { chunk } from "remeda";
 import { db } from "../lib/bot";
 
 const SPEAKER_CID = 'SET_SPEAKER_STYLE';
 
-export const genSpeakerCommand = (): ICommand => {
+export const genSpeakerCommand = (vvInfo: VoicevoxInfoStore): ICommand => {
 
   const chunkedSpeakers = chunk(vvInfo.speakers, 25);
 
