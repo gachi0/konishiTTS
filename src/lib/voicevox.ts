@@ -118,5 +118,7 @@ export let vvInfo: VoicevoxInfoStore;
 
 /** 起動時に実行しろ */
 export const setupVvInfo = async () => {
-  vvInfo = await vvClient.fetchInfo();
+  const vvinfo = await vvClient.fetchInfo();
+  vvInfo = vvinfo;
+  return vvinfo;
 };

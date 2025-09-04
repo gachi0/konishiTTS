@@ -6,12 +6,13 @@ import skip from "./skip";
 import { genSpeakerCommand } from "./speaker";
 import userSetting from "./settings/user";
 import { genHelp } from "./help/help";
-import { vvInfo } from "../lib/voicevox";
+import { VoicevoxInfoStore } from "../lib/voicevox";
+import { pipe } from "remeda";
 
 export const commands = new Map<string, ICommand>();
 
 /** 実行時にVVInfoとかのあとに実行させてね */
-export const setupCommands = (): Map<string, ICommand> => {
+export const setupCommands = (vvInfo: VoicevoxInfoStore): Map<string, ICommand> => {
 
   // 単純なコマンド
   [join, leave, skip]
@@ -24,11 +25,14 @@ export const setupCommands = (): Map<string, ICommand> => {
       commands.set(c.data.name, c);
     });
 
-  // helpコマンド以外のhelpコマンドのメタデータを作成。
-  const beforeHelpCmd = genHelp([...commands.values()]);
-  // helpコマンドのメタデータも入ったcommandsでhelpコマンド自体も含むhelpコマンドのメタデータを上書き。
-  const fullHelpCmd = genHelp([beforeHelpCmd, ...commands.values()]);
-  commands.set(fullHelpCmd.data.name, fullHelpCmd);
+  const commandsAry = [...commands.values()];
+  const helpCommand = pipe(
+    genHelp(commandsAry), // まずhelpコマンド以外のhelpコマンドのメタデータを作成。
+    help => genHelp([help, ...commandsAry]), // 次にhelpコマンドを含むcommandsでhelpコマンドのメタデータを上書き。 (helpにhelp追加)
+    help => genHelp([help, ...commandsAry]), // 最後にhelpコマンド自体も含むhelpコマンドのメタデータも入ったcommandsでhelpコマンドのメタデータをで上書き。 (helpコマンドで表示されるhelpコマンドhelpにhelpコマンドのオプションを追加)
+  );
+
+  commands.set(helpCommand.data.name, helpCommand);
 
   return commands;
 };

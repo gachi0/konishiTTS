@@ -6,13 +6,13 @@ import interaction from "./events/interaction";
 import message from "./events/message";
 import ready from "./events/ready";
 import vcUpdate from "./events/vcUpdate";
-import { setupVvInfo, vvClient } from "./lib/voicevox";
+import { setupVvInfo, vvClient, vvInfo } from "./lib/voicevox";
 
 const main = async () => {
   console.log("running...");
   await vvClient.init();
   await setupVvInfo();
-  setupCommands();
+  setupCommands(vvInfo);
 
   client
     .on(error.name, error.listener)

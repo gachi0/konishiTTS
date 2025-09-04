@@ -13,8 +13,8 @@ const [_0, _1, cmdName, guildId] = process.argv;
 
 const ready = createEvent("clientReady", async client => {
   await vvClient.init();
-  await setupVvInfo();
-  setupCommands();
+  const vvInfo = await setupVvInfo();
+  setupCommands(vvInfo);
 
   const commandData = [...commands.values()].map(c => c.data);
 
@@ -44,7 +44,6 @@ const ready = createEvent("clientReady", async client => {
   else {
     throw Error(`不正な引数: ${cmdName}`);
   }
-
 
 });
 
