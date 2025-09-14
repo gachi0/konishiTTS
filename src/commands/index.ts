@@ -1,6 +1,7 @@
 
 import { ICommand } from "../service/types";
 import join from "./join";
+import { dictCommand } from "./dict/index";
 import leave from "./leave";
 import skip from "./skip";
 import { genSpeakerCommand } from "./speaker";
@@ -15,7 +16,7 @@ export const commands = new Map<string, ICommand>();
 export const setupCommands = (vvInfo: VoicevoxInfoStore): Map<string, ICommand> => {
 
   // 単純なコマンド
-  [join, leave, skip]
+  [join, leave, skip, dictCommand]
     .forEach(c => commands.set(c.data.name, c));
 
   // VoiceVoxの起動時データが必要なコマンド

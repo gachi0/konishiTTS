@@ -15,11 +15,16 @@ const main = async () => {
   setupCommands(vvInfo);
 
   client
-    .on(error.name, error.listener)
     .on(interaction.name, interaction.listener)
     .on(message.name, message.listener)
     .on(ready.name, ready.listener)
-    .on(vcUpdate.name, vcUpdate.listener);
+    .on(vcUpdate.name, vcUpdate.listener)
+    .on(error.name, error.listener)
+    ;
+
+  process.on('uncaughtException', (l) => {
+    console.error(l);
+  });
 
   await client.login(env.DISCORD_TOKEN);
 };
