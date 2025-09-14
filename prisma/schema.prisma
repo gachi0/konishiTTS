@@ -35,6 +35,7 @@ model KWord {
 
   author  KUser  @relation(fields: [kUserId], references: [id])
   kUserId String
-  Guild   KGuild @relation(fields: [guildId], references: [id])
+
+  Guild   KGuild @relation(fields: [guildId], references: [id], onDelete: Cascade)
   guildId String
 }
