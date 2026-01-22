@@ -6,11 +6,11 @@ voicevoxを使用したdiscordの読み上げBot
 ### 環境  
 [node.js](https://nodejs.org/ja/) v16以上が必要です。  
 
-
 1. 必要なパッケージのインストール  
 ```
 npm i
 ```
+
 3. 実行！  
 ```
 npm start

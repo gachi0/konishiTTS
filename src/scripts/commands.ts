@@ -2,7 +2,7 @@ import { env } from "../lib/env";
 import { client } from "../lib/bot";
 import { commands, setupCommands } from "../commands";
 import { createEvent } from "../service/types";
-import { setupVvInfo, vvClient, vvInfo } from "../lib/voicevox";
+import { setupVvInfo, vvClient } from "../lib/voicevox";
 
 /**
  * sample

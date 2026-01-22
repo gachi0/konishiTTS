@@ -23,6 +23,7 @@ export default createEvent("messageCreate", async msg => {
   // 読み上げるための文字列
   let text = guild.readName ? msg.author.username : '';
   text += msg.content;
+  text = text.slice(0, 200);
 
   // いろいろ読み上げないようにする
   text = text
@@ -37,3 +38,4 @@ export default createEvent("messageCreate", async msg => {
   // 文字列を読み上げる
   await manager.speak(text, user.speaker ?? guild.speaker);
 });
+
